@@ -1,25 +1,36 @@
 <?php
+
 namespace gossi\swagger\parts;
 
 use gossi\swagger\collections\Parameters;
 use phootwork\collection\Map;
 
-trait ParametersPart {
+trait ParametersPart
+{
+    /** @var Parameters */
+    private $parameters;
 
-	/** @var Parameters */
-	private $parameters;
+    private function parseParameters(Map $data)
+    {
+        $this->parameters = new Parameters($data->get('parameters', new Map()));
+    }
 
-	private function parseParameters(Map $data) {
-		$this->parameters = new Parameters($data->get('parameters', new Map()));
-	}
+    private function mergeParameters(array $data)
+    {
+        if (null === $this->parameters) {
+            $this->parameters = new Parameters();
+        }
 
-	/**
-	 * Return parameters
-	 *
-	 * @return Parameters
-	 */
-	public function getParameters() {
-		return $this->parameters;
-	}
+        $this->parameters->merge($data['parameters'] ?? []);
+    }
 
+    /**
+     * Return parameters.
+     *
+     * @return Parameters
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
 }

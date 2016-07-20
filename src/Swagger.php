@@ -1,4 +1,5 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\collections\Definitions;
@@ -11,6 +12,7 @@ use gossi\swagger\parts\ProducesPart;
 use gossi\swagger\parts\ResponsesPart;
 use gossi\swagger\parts\SchemesPart;
 use gossi\swagger\parts\TagsPart;
+use gossi\swagger\Util\MergeHelper;
 use phootwork\collection\CollectionUtils;
 use phootwork\collection\Map;
 use phootwork\file\exception\FileNotFoundException;
@@ -18,198 +20,193 @@ use phootwork\file\File;
 use phootwork\json\Json;
 use phootwork\lang\Arrayable;
 
-class Swagger extends AbstractModel implements Arrayable {
+class Swagger extends AbstractModel implements Arrayable
+{
+    use SchemesPart;
+    use ConsumesPart;
+    use ProducesPart;
+    use TagsPart;
+    use ParametersPart;
+    use ResponsesPart;
+    use ExternalDocsPart;
+    use ExtensionPart;
 
-	use SchemesPart;
-	use ConsumesPart;
-	use ProducesPart;
-	use TagsPart;
-	use ParametersPart;
-	use ResponsesPart;
-	use ExternalDocsPart;
-	use ExtensionPart;
+    public static $METHODS = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
 
-	const T_INTEGER = 'integer';
-	const T_NUMBER = 'number';
-	const T_BOOLEAN = 'boolean';
-	const T_STRING = 'string';
-	const T_FILE = 'file';
+    /** @var string */
+    private $swagger = '2.0';
 
-	const F_INT32 = 'int32';
-	const F_INT64 = 'int64';
-	const F_FLOAT = 'float';
-	const F_DOUBLE = 'double';
-	const F_STRING = 'string';
-	const F_BYTE = 'byte';
-	const F_BINARY = 'binary';
-	const F_DATE = 'date';
-	const F_DATETIME = 'date-time';
-	const F_PASSWORD = 'password';
+    /** @var Info */
+    private $info;
 
-	public static $METHODS = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
+    /** @var string */
+    private $host;
 
-	/** @var string */
-	private $swagger = '2.0';
+    /** @var string */
+    private $basePath;
 
-	/** @var Info */
-	private $info;
+    /** @var Paths */
+    private $paths;
 
-	/** @var string */
-	private $host;
+    /** @var Definitions */
+    private $definitions;
 
-	/** @var string */
-	private $basePath;
+    /** @var Map */
+    private $securityDefinitions;
 
-	/** @var Paths */
-	private $paths;
+    /**
+     * @param string $filename
+     *
+     * @throws FileNotFoundException
+     * @throws JsonException
+     *
+     * @return static
+     */
+    public static function fromFile($filename)
+    {
+        $file = new File($filename);
 
-	/** @var Definitions */
-	private $definitions;
+        if (!$file->exists()) {
+            throw new FileNotFoundException(sprintf('File not found at: %s', $filename));
+        }
 
-	/** @var Map */
-	private $securityDefinitions;
+        $json = Json::decode($file->read());
 
-	/**
-	 *
-	 * @param string $filename
-	 * @throws FileNotFoundException
-	 * @throws JsonException
-	 * @return static
-	 */
-	public static function fromFile($filename) {
-		$file = new File($filename);
+        return new static($json);
+    }
 
-		if (!$file->exists()) {
-			throw new FileNotFoundException(sprintf('File not found at: %s', $filename));
-		}
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-		$json = Json::decode($file->read());
+    public function merge(array $data, $overwrite = false)
+    {
+        MergeHelper::mergeFields($this->host, $data['host'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->basePath, $data['basePath'] ?? null, $overwrite);
 
-		return new static($json);
-	}
+        $this->info = new Info($data['info'] ?? []);
+        $this->definitions = new Definitions($data['definitions'] ?? []);
+        $this->paths = new Paths($data['paths'] ?? []);
 
-	public function __construct($contents = []) {
-		$this->parse($contents);
-	}
+        $this->mergeConsumes($data);
+        $this->mergeParameters($data);
 
-	private function parse($contents) {
-		$data = CollectionUtils::toMap($contents);
+        $data = CollectionUtils::toMap($data);
 
-		$this->swagger = $data->get('version', $this->swagger);
-		$this->host = $data->get('host');
-		$this->basePath = $data->get('basePath');
-		$this->info = new Info($data->get('info', []));
-		$this->paths = new Paths($data->get('paths'));
-		$this->definitions = new Definitions($data->get('definitions', new Map()));
+        // security schemes
+        $this->securityDefinitions = $data->get('securityDefinitions', new Map());
+        foreach ($this->securityDefinitions as $s => $def) {
+            $this->securityDefinitions->set($s, new SecurityScheme($s, $def));
+        }
 
-		// security schemes
-		$this->securityDefinitions = $data->get('securityDefinitions', new Map());
-		foreach ($this->securityDefinitions as $s => $def) {
-			$this->securityDefinitions->set($s, new SecurityScheme($s, $def));
-		}
+        // parts
+        $this->parseSchemes($data);
+        $this->parseProduces($data);
+        $this->parseTags($data);
+        $this->parseResponses($data);
+        $this->parseExternalDocs($data);
+        $this->parseExtensions($data);
+    }
 
-		// parts
-		$this->parseSchemes($data);
-		$this->parseConsumes($data);
-		$this->parseProduces($data);
-		$this->parseTags($data);
-		$this->parseParameters($data);
-		$this->parseResponses($data);
-		$this->parseExternalDocs($data);
-		$this->parseExtensions($data);
-	}
+    public function toArray()
+    {
+        return $this->export('swagger', 'info', 'host', 'basePath', 'schemes', 'consumes', 'produces',
+            'paths', 'definitions', 'parameters', 'responses', 'tags', 'externalDocs'
+        );
+    }
 
-	public function toArray() {
-		return $this->export('swagger', 'info', 'host', 'basePath', 'schemes', 'consumes', 'produces',
-			'paths', 'definitions', 'parameters', 'responses', 'tags', 'externalDocs'
-		);
-	}
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->swagger;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getVersion() {
-		return $this->swagger;
-	}
+    /**
+     * @param string $version
+     *
+     * @return $this
+     */
+    public function setVersion($version)
+    {
+        $this->swagger = $version;
 
-	/**
-	 *
-	 * @param string $version
-	 * @return $this
-	 */
-	public function setVersion($version) {
-		$this->swagger = $version;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @return Info
-	 */
-	public function getInfo() {
-		return $this->info;
-	}
+    /**
+     * @return Info
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getHost() {
-		return $this->host;
-	}
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
 
-	/**
-	 *
-	 * @param string $host
-	 * @return $this
-	 */
-	public function setHost($host) {
-		$this->host = $host;
-		return $this;
-	}
+    /**
+     * @param string $host
+     *
+     * @return $this
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getBasePath() {
-		return $this->basePath;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @param string $basePath
-	 * @return $this
-	 */
-	public function setBasePath($basePath) {
-		$this->basePath = $basePath;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->basePath;
+    }
 
-	/**
-	 *
-	 * @return Paths
-	 */
-	public function getPaths() {
-		return $this->paths;
-	}
+    /**
+     * @param string $basePath
+     *
+     * @return $this
+     */
+    public function setBasePath($basePath)
+    {
+        $this->basePath = $basePath;
 
-	/**
-	 *
-	 * @return Definitions
-	 */
-	public function getDefinitions() {
-		return $this->definitions;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @return Map
-	 */
-	public function getSecurityDefinitions() {
-		return $this->securityDefinitions;
-	}
+    /**
+     * @return Paths
+     */
+    public function getPaths()
+    {
+        return $this->paths;
+    }
+
+    /**
+     * @return Definitions
+     */
+    public function getDefinitions()
+    {
+        return $this->definitions;
+    }
+
+    /**
+     * @return Map
+     */
+    public function getSecurityDefinitions()
+    {
+        return $this->securityDefinitions;
+    }
 
 // 	/**
 // 	 *
@@ -219,5 +216,4 @@ class Swagger extends AbstractModel implements Arrayable {
 // 		$this->securityDefinitions = $securityDefinitions;
 // 		return $this;
 // 	}
-
 }

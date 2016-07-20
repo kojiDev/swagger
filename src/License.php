@@ -1,53 +1,58 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\parts\ExtensionPart;
 use gossi\swagger\parts\UrlPart;
+use gossi\swagger\Util\MergeHelper;
 use phootwork\collection\CollectionUtils;
 use phootwork\lang\Arrayable;
 
-class License extends AbstractModel implements Arrayable {
+class License extends AbstractModel implements Arrayable
+{
+    use UrlPart;
+    use ExtensionPart;
 
-	use UrlPart;
-	use ExtensionPart;
+    /** @var string */
+    private $name;
 
-	/** @var string */
-	private $name;
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-	public function __construct($contents = []) {
-		$this->parse($contents);
-	}
+    public function merge(array $data, $overwrite = false)
+    {
+        MergeHelper::mergeFields($this->name, $data['name'] ?? null, $overwrite);
 
-	private function parse($contents = []) {
-		$data = CollectionUtils::toMap($contents);
+        $data = CollectionUtils::toMap($data);
+        // extensions
+        $this->parseUrl($data);
+        $this->parseExtensions($data);
+    }
 
-		$this->name = $data->get('name');
+    public function toArray()
+    {
+        return $this->export('name', 'url');
+    }
 
-		// extensions
-		$this->parseUrl($data);
-		$this->parseExtensions($data);
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function toArray() {
-		return $this->export('name', 'url');
-	}
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
-
-	/**
-	 *
-	 * @param string $name
-	 * @return $this
-	 */
-	public function setName($name) {
-		$this->name = $name;
-		return $this;
-	}
-
+        return $this;
+    }
 }

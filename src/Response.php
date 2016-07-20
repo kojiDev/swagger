@@ -1,4 +1,5 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\collections\Headers;
@@ -10,68 +11,72 @@ use phootwork\collection\CollectionUtils;
 use phootwork\collection\Map;
 use phootwork\lang\Arrayable;
 
-class Response extends AbstractModel implements Arrayable {
+class Response extends AbstractModel implements Arrayable
+{
+    use RefPart;
+    use DescriptionPart;
+    use SchemaPart;
+    use ExtensionPart;
 
-	use RefPart;
-	use DescriptionPart;
-	use SchemaPart;
-	use ExtensionPart;
+    /** @var string */
+    private $code;
 
-	/** @var string */
-	private $code;
+    /** @var Map */
+    private $examples;
 
-	/** @var Map */
-	private $examples;
+    /** @var Headers */
+    private $headers;
 
-	/** @var Headers */
-	private $headers;
+    public function __construct($code, $contents = [])
+    {
+        $this->code = $code;
+        $this->parse($contents);
+    }
 
-	public function __construct($code, $contents = []) {
-		$this->code = $code;
-		$this->parse($contents);
-	}
+    private function parse($contents)
+    {
+        $data = CollectionUtils::toMap($contents);
 
-	private function parse($contents) {
-		$data = CollectionUtils::toMap($contents);
+        $this->examples = $data->get('examples', new Map());
+        $this->headers = new Headers($data->get('headers'));
 
-		$this->examples = $data->get('examples', new Map());
-		$this->headers = new Headers($data->get('headers'));
+        // parts
+        $this->parseRef($data);
+        $this->parseDescription($data);
+        $this->parseSchema($data);
+        $this->parseExtensions($data);
+    }
 
-		// parts
-		$this->parseRef($data);
-		$this->parseDescription($data);
-		$this->parseSchema($data);
-		$this->parseExtensions($data);
-	}
+    public function toArray()
+    {
+        return $this->export('description', 'schema', 'headers', 'examples');
+    }
 
-	public function toArray() {
-		return $this->export('description', 'schema', 'headers', 'examples');
-	}
+    /**
+     * Returns the responses code.
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
 
-	/**
-	 * Returns the responses code
-	 * 
-	 * @return string
-	 */
-	public function getCode() {
-		return $this->code;
-	}
+    /**
+     * @return Map
+     */
+    public function getExamples()
+    {
+        return $this->examples;
+    }
 
-	/**
-	 * 
-	 * @return Map
-	 */
-	public function getExamples() {
-		return $this->examples;
-	}
-
-	/**
-	 * Returns headers for this response
-	 * 
-	 * @return Headers
-	 */
-	public function getHeaders() {
-		return $this->headers;
-	}
-
+    /**
+     * Returns headers for this response.
+     *
+     * @return Headers
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
 }

@@ -1,17 +1,19 @@
 <?php
+
 namespace gossi\swagger;
 
-class SecurityScheme {
+class SecurityScheme
+{
+    /** @var string */
+    private $name;
 
-	/** @var string */
-	private $name;
+    public function __construct($name, $contents = [])
+    {
+        $this->name = $name;
+        $this->parse($contents);
+    }
 
-	public function __construct($name, $contents = []) {
-		$this->name = $name;
-		$this->parse($contents);
-	}
-
-	private function parse($contents = []) {
-
-	}
+    private function parse($contents = [])
+    {
+    }
 }

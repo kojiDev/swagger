@@ -1,4 +1,5 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\parts\DescriptionPart;
@@ -11,103 +12,89 @@ use gossi\swagger\parts\TypePart;
 use phootwork\collection\CollectionUtils;
 use phootwork\lang\Arrayable;
 
-class Parameter extends AbstractModel implements Arrayable {
+class Parameter extends AbstractModel implements Arrayable
+{
+    use RefPart;
+    use DescriptionPart;
+    use SchemaPart;
+    use TypePart;
+    use ItemsPart;
+    use RequiredPart;
+    use ExtensionPart;
 
-	use RefPart;
-	use DescriptionPart;
-	use SchemaPart;
-	use TypePart;
-	use ItemsPart;
-	use RequiredPart;
-	use ExtensionPart;
+    /** @var string */
+    private $name;
 
-	/** @var string */
-	private $name;
+    /** @var string */
+    private $in;
 
-	/** @var string */
-	private $in;
+    /** @var bool */
+    private $allowEmptyValue = false;
 
-	/** @var bool */
-	private $allowEmptyValue = false;
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-	public function __construct($contents = []) {
-		$this->parse($contents);
-	}
+    public function merge(array $data, $overwrite = false)
+    {
+        $data = CollectionUtils::toMap($data);
 
-	private function parse($contents = []) {
-		$data = CollectionUtils::toMap($contents);
+        $this->name = $data->get('name');
+        $this->in = $data->get('in');
+        $this->allowEmptyValue = $data->has('allowEmptyValue') && $data->get('allowEmptyValue');
 
-		$this->name = $data->get('name');
-		$this->in = $data->get('in');
-		$this->allowEmptyValue = $data->has('allowEmptyValue') && $data->get('allowEmptyValue');
+        // parts
+        $this->parseRef($data);
+        $this->parseDescription($data);
+        $this->parseSchema($data);
+        $this->parseRequired($data);
+        $this->parseType($data);
+        $this->parseItems($data);
+        $this->parseExtensions($data);
+    }
 
-		// parts
-		$this->parseRef($data);
-		$this->parseDescription($data);
-		$this->parseSchema($data);
-		$this->parseRequired($data);
-		$this->parseType($data);
-		$this->parseItems($data);
-		$this->parseExtensions($data);
-	}
+    public function toArray()
+    {
+        return $this->export('name', 'in', 'allowEmptyValue', 'required', 'description', 'schema',
+                $this->getTypeExportFields(), 'items');
+    }
 
-	public function toArray() {
-		return $this->export('name', 'in', 'allowEmptyValue', 'required', 'description', 'schema',
-				$this->getTypeExportFields(), 'items');
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * @return string
+     */
+    public function getIn()
+    {
+        return $this->in;
+    }
 
-	/**
-	 *
-	 * @param string $name
-	 */
-	public function setName($name) {
-		$this->name = $name;
-		return $this;
-	}
+    /**
+     * @return bool
+     */
+    public function getAllowEmptyValue()
+    {
+        return $this->allowEmptyValue;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getIn() {
-		return $this->in;
-	}
+    /**
+     * Sets the ability to pass empty-valued parameters. This is valid only for either `query` or
+     * `formData` parameters and allows you to send a parameter with a name only or an empty value.
+     * Default value is `false`.
+     *
+     * @param bool $allowEmptyValue
+     */
+    public function setAllowEmptyValue($allowEmptyValue)
+    {
+        $this->allowEmptyValue = $allowEmptyValue;
 
-	/**
-	 *
-	 * @param string $in
-	 */
-	public function setIn($in) {
-		$this->in = $in;
-		return $this;
-	}
-
-	/**
-	 *
-	 * @return bool
-	 */
-	public function getAllowEmptyValue() {
-		return $this->allowEmptyValue;
-	}
-
-	/**
-	 * Sets the ability to pass empty-valued parameters. This is valid only for either `query` or 
-	 * `formData` parameters and allows you to send a parameter with a name only or an empty value. 
-	 * Default value is `false`.
-	 * 
-	 * @param bool $allowEmptyValue
-	 */
-	public function setAllowEmptyValue($allowEmptyValue) {
-		$this->allowEmptyValue = $allowEmptyValue;
-		return $this;
-	}
-
+        return $this;
+    }
 }

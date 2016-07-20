@@ -1,4 +1,5 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\collections\Definitions;
@@ -10,195 +11,212 @@ use gossi\swagger\parts\RefPart;
 use gossi\swagger\parts\TypePart;
 use phootwork\collection\ArrayList;
 use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
 use phootwork\lang\Arrayable;
 
-class Schema extends AbstractModel implements Arrayable {
+class Schema extends AbstractModel implements Arrayable
+{
+    use RefPart;
+    use TypePart;
+    use DescriptionPart;
+    use ItemsPart;
+    use ExternalDocsPart;
+    use ExtensionPart;
 
-	use RefPart;
-	use TypePart;
-	use DescriptionPart;
-	use ItemsPart;
-	use ExternalDocsPart;
-	use ExtensionPart;
+    /** @var string */
+    private $discriminator;
 
-	/** @var string */
-	private $discriminator;
+    /** @var bool */
+    private $readOnly;
 
-	/** @var bool */
-	private $readOnly = false;
+    /** @var string */
+    private $title;
 
-	/** @var string */
-	private $title;
+    private $xml;
 
-	private $xml;
+    /** @var string */
+    private $example;
 
-	/** @var string */
-	private $example;
+    /** @var ArrayList|bool */
+    private $required;
 
-	/** @var ArrayList|bool */
-	private $required;
+    /** @var Definitions */
+    private $properties;
 
-	/** @var Definitions */
-	private $properties;
+    /** @var ArrayList */
+    private $allOf = [];
 
-	/** @var ArrayList */
-	private $allOf;
+    /** @var Schema */
+    private $additionalProperties;
 
-	/** @var Schema */
-	private $additionalProperties;
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-	public function __construct($contents = null) {
-		$this->parse($contents === null ? new Map() : $contents);
-	}
+    public function merge(array $data, $overwrite = false)
+    {
+        $this->required = $data['required'] ?? null;
+        $this->properties = new Definitions($data['properties'] ?? []);
 
-	private function parse($contents = []) {
-		$data = CollectionUtils::toMap($contents);
+        foreach ($data['allOf'] ?? [] as $schema) {
+            $this->allOf[] = new self($schema);
+        }
 
-		$this->title = $data->get('title');
-		$this->discriminator = $data->get('discriminator');
-		$this->readOnly = $data->has('readOnly') && $data->get('readOnly');
-		$this->example = $data->get('example');
-		$this->required = $data->get('required');
-		$this->properties = new Definitions($data->get('properties'));
-		if ($data->has('additionalProperties')) {
-			$this->additionalProperties = new self($data->get('additionalProperties'));
-		}
+        $data = CollectionUtils::toMap($data);
 
-		$this->allOf = new ArrayList();
-		if ($data->has('allOf')) {
-			foreach ($data->get('allOf') as $schema) {
-				$this->allOf->add(new self($schema));
-			}
-		}
+        $this->title = $data->get('title');
+        $this->discriminator = $data->get('discriminator');
+        $this->readOnly = $data->has('readOnly') && $data->get('readOnly');
+        $this->example = $data->get('example');
+        if ($data->has('additionalProperties')) {
+            $this->additionalProperties = new self($data->get('additionalProperties'));
+        }
 
-		// parts
-		$this->parseRef($data);
-		$this->parseType($data);
-		$this->parseDescription($data);
-		$this->parseItems($data);
-		$this->parseExternalDocs($data);
-		$this->parseExtensions($data);
-	}
+        // parts
+        $this->parseRef($data);
+        $this->parseType($data);
+        $this->parseDescription($data);
+        $this->parseItems($data);
+        $this->parseExternalDocs($data);
+        $this->parseExtensions($data);
+    }
 
-	public function toArray() {
-		return $this->export('title', 'discriminator', 'description', 'readOnly', 'example',
-				'externalDocs', $this->getTypeExportFields(), 'items', 'required',
-				'properties', 'additionalProperties', 'allOf');
-	}
+    protected function doExport()
+    {
+        if ($this->hasRef()) {
+            return ['$ref' => $this->getRef()];
+        }
 
-	/**
-	 *
-	 * @return bool|array
-	 */
-	public function getRequired() {
-		return $this->required;
-	}
+        return array_merge([
+            'title' => $this->getTitle(),
+            'discriminator' => $this->getDiscriminator(),
+            'description' => $this->getDescription(),
+            'readOnly' => $this->isReadOnly() ?: null,
+            'example' => $this->getExample(),
+            'externalDocs' => $this->getExternalDocs(),
+            'items' => $this->getItems()->toArray() ?: null,
+            'required' => $this->getRequired(),
+            'properties' => $this->getProperties()->toArray() ?: null,
+            'additionalProperties' => $this->getAdditionalProperties(),
+            'allOf' => $this->getAllOf() ?: null,
+        ], $this->doExportType());
+    }
 
-	/**
-	 *
-	 * @param bool|array $required
-	 * @return $this
-	 */
-	public function setRequired($required) {
-		$this->required = $required;
-		return $this;
-	}
+    /**
+     * @return bool|array
+     */
+    public function getRequired()
+    {
+        return $this->required;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getDiscriminator() {
-		return $this->discriminator;
-	}
+    /**
+     * @param bool|array $required
+     *
+     * @return $this
+     */
+    public function setRequired($required)
+    {
+        $this->required = $required;
 
-	/**
-	 *
-	 * @param string $discriminator
-	 */
-	public function setDiscriminator($discriminator) {
-		$this->discriminator = $discriminator;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @return bool
-	 */
-	public function isReadOnly() {
-		return $this->readOnly;
-	}
+    /**
+     * @return string
+     */
+    public function getDiscriminator()
+    {
+        return $this->discriminator;
+    }
 
-	/**
-	 *
-	 * @param bool $readOnly
-	 */
-	public function setReadOnly($readOnly) {
-		$this->readOnly = $readOnly;
-		return $this;
-	}
+    /**
+     * @param string $discriminator
+     */
+    public function setDiscriminator($discriminator)
+    {
+        $this->discriminator = $discriminator;
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getExample() {
-		return $this->example;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @param string $example
-	 */
-	public function setExample($example) {
-		$this->example = $example;
-		return $this;
-	}
+    /**
+     * @return bool
+     */
+    public function isReadOnly()
+    {
+        return $this->readOnly;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * @param bool $readOnly
+     */
+    public function setReadOnly($readOnly)
+    {
+        $this->readOnly = $readOnly;
 
-	/**
-	 *
-	 * @param string $title
-	 * @return $this
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @return Definitions
-	 */
-	public function getProperties() {
-		return $this->properties;
-	}
+    /**
+     * @return string
+     */
+    public function getExample()
+    {
+        return $this->example;
+    }
 
-	/**
-	 *
-	 * @return ArrayList
-	 */
-	public function getAllOf() {
-		return $this->allOf;
-	}
+    /**
+     * @param string $example
+     */
+    public function setExample($example)
+    {
+        $this->example = $example;
 
-	/**
-	 *
-	 * @return Schema
-	 */
-	public function getAdditionalProperties() {
-		if ($this->additionalProperties === null) {
-			$this->additionalProperties = new self();
-		}
-		return $this->additionalProperties;
-	}
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return Definitions
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @return ArrayList
+     */
+    public function getAllOf()
+    {
+        return $this->allOf;
+    }
+
+    /**
+     * @return Schema|null
+     */
+    public function getAdditionalProperties()
+    {
+        return $this->additionalProperties;
+    }
 }

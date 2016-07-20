@@ -1,122 +1,131 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\parts\DescriptionPart;
 use gossi\swagger\parts\ExtensionPart;
 use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
 use phootwork\lang\Arrayable;
 
-class Info extends AbstractModel implements Arrayable {
+class Info extends AbstractModel implements Arrayable
+{
+    use DescriptionPart;
+    use ExtensionPart;
 
-	use DescriptionPart;
-	use ExtensionPart;
+    /** @var string */
+    private $title;
 
-	/** @var string */
-	private $title;
+    /** @var string */
+    private $termsOfService;
 
-	/** @var string */
-	private $termsOfService;
+    /** @var Contact */
+    private $contact;
 
-	/** @var Contact */
-	private $contact;
+    /** @var License */
+    private $license;
 
-	/** @var License */
-	private $license;
+    /** @var string */
+    private $version;
 
-	/** @var string */
-	private $version;
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-	public function __construct($contents = []) {
-		$this->parse($contents);
-	}
+    public function merge(array $data, $overwrite = false)
+    {
+        $this->contact = new Contact($data['contact'] ?? []);
+        $this->license = new License($data['license'] ?? []);
 
-	private function parse($contents = []) {
-		$data = CollectionUtils::toMap($contents);
+        $data = CollectionUtils::toMap($data);
 
-		$this->title = $data->get('title');
-		$this->termsOfService = $data->get('termsOfService');
-		$this->contact = new Contact($data->get('contact', new Map()));
-		$this->license = new License($data->get('license', new Map()));
-		$this->version = $data->get('version');
+        $this->title = $data->get('title');
+        $this->termsOfService = $data->get('termsOfService');
+        $this->version = $data->get('version');
 
-		// extensions
-		$this->parseDescription($data);
-		$this->parseExtensions($data);
-	}
+        // extensions
+        $this->parseDescription($data);
+        $this->parseExtensions($data);
+    }
 
-	public function toArray() {
-		return $this->export('version', 'title', 'description', 'termsOfService', 'contact', 'license');
-	}
+    public function toArray()
+    {
+        return $this->export('version', 'title', 'description', 'termsOfService', 'contact', 'license');
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-	/**
-	 *
-	 * @param string $title
-	 * @return $this
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-		return $this;
-	}
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getTerms() {
-		return $this->termsOfService;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @param string $terms
-	 * @return $this
-	 */
-	public function setTerms($terms) {
-		$this->termsOfService = $terms;
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTerms()
+    {
+        return $this->termsOfService;
+    }
 
-	/**
-	 *
-	 * @return Contact
-	 */
-	public function getContact() {
-		return $this->contact;
-	}
+    /**
+     * @param string $terms
+     *
+     * @return $this
+     */
+    public function setTerms($terms)
+    {
+        $this->termsOfService = $terms;
 
-	/**
-	 *
-	 * @return License
-	 */
-	public function getLicense() {
-		return $this->license;
-	}
+        return $this;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getVersion() {
-		return $this->version;
-	}
+    /**
+     * @return Contact
+     */
+    public function getContact()
+    {
+        return $this->contact;
+    }
 
-	/**
-	 *
-	 * @param string $version
-	 * @return $this
-	 */
-	public function setVersion($version) {
-		$this->version = $version;
-		return $this;
-	}
+    /**
+     * @return License
+     */
+    public function getLicense()
+    {
+        return $this->license;
+    }
 
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param string $version
+     *
+     * @return $this
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
+
+        return $this;
+    }
 }

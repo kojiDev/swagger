@@ -1,4 +1,5 @@
 <?php
+
 namespace gossi\swagger;
 
 use gossi\swagger\parts\DescriptionPart;
@@ -7,65 +8,77 @@ use gossi\swagger\parts\ExternalDocsPart;
 use phootwork\collection\CollectionUtils;
 use phootwork\lang\Arrayable;
 
-class Tag extends AbstractModel implements Arrayable {
+final class Tag extends AbstractModel implements Arrayable
+{
+    use DescriptionPart;
+    use ExternalDocsPart;
+    use ExtensionPart;
 
-	use DescriptionPart;
-	use ExternalDocsPart;
-	use ExtensionPart;
+    /** @var string */
+    private $name;
 
-	/** @var string */
-	private $name;
+    private $isObject = true;
 
-	private $isObject = true;
+    public function __construct($data)
+    {
+        $data = $this->normalize($data);
+        if (!isset($data['name'])) {
+            throw new \InvalidArgumentException('A tag must have a name.');
+        }
 
-	public function __construct($contents = []) {
-		$this->parse($contents);
-	}
+        $this->name = $data['name'];
+        $this->merge($data);
+    }
 
-	private function parse($contents = []) {
-		if (is_string($contents)) {
-			$this->isObject = false;
-			$this->name = $contents;
-		} else {
-			$data = CollectionUtils::toMap($contents);
+    public function merge($data, $overwrite = false)
+    {
+        $data = $this->normalize($data);
 
-			$this->isObject = true;
-			$this->name = $data->get('name');
+        $map = CollectionUtils::toMap($data);
+        // parts
+        $this->parseDescription($map);
+        $this->parseExternalDocs($map);
+        $this->parseExtensions($map);
+    }
 
-			// parts
-			$this->parseDescription($data);
-			$this->parseExternalDocs($data);
-			$this->parseExtensions($data);
-		}
-	}
+    public function toArray()
+    {
+        $return = parent::toArray();
+        if (1 === count($return)) {
+            return $return['name'];
+        }
 
-	public function toArray() {
-		return $this->export('name', 'description', 'externalDocs');
-	}
+        return $return;
+    }
 
-	public function isObject() {
-		return $this->isObject;
-	}
+    protected function doExport(): array
+    {
+        return [
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'externalDocs' => $this->getExternalDocs(),
+        ];
+    }
 
-	public function setObject($object) {
-		$this->isObject = $object;
-	}
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
-	/**
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * @param string|array $data
+     */
+    private function normalize($data): array
+    {
+        if (is_string($data)) {
+            return [
+                'name' => $data,
+            ];
+        }
 
-	/**
-	 *
-	 * @param string $name
-	 */
-	public function setName($name) {
-		$this->name = $name;
-		return $this;
-	}
-
+        return $data;
+    }
 }

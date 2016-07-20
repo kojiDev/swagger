@@ -1,118 +1,132 @@
 <?php
+
 namespace gossi\swagger\collections;
 
 use gossi\swagger\Schema;
-use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
 use phootwork\lang\Arrayable;
 use gossi\swagger\AbstractModel;
 
-class Definitions extends AbstractModel implements Arrayable, \Iterator {
+class Definitions extends AbstractModel implements Arrayable, \Iterator
+{
+    private $definitions = [];
 
-	/** @var Map */
-	private $definitions;
+    public function __construct(array $data = [])
+    {
+        $this->merge($data);
+    }
 
-	public function __construct($contents = []) {
-		$this->parse($contents === null ? [] : $contents);
-	}
+    public function merge(array $data, $overwrite = false)
+    {
+        foreach ($data as $name => $schema) {
+            $this->get($name)->merge($schema, $overwrite);
+        }
+    }
 
-	private function parse($contents) {
-		$data = CollectionUtils::toMap($contents);
+    protected function doExport()
+    {
+        return $this->definitions;
+    }
 
-		$this->definitions = new Map();
-		foreach ($data as $name => $prop) {
-			$this->definitions->set($name, new Schema($prop));
-		}
-	}
+    public function size()
+    {
+        return count($this->definitions);
+    }
 
-	public function toArray() {
-		return CollectionUtils::toArrayRecursive($this->definitions);
-	}
+    /**
+     * Returns the schema for the given field.
+     *
+     * @param string $name
+     *
+     * @return Schema
+     */
+    public function get($name)
+    {
+        if (!$this->has($name)) {
+            $this->set($name, new Schema());
+        }
 
-	public function size() {
-		return $this->definitions->size();
-	}
+        return $this->definitions[$name];
+    }
 
-	/**
-	 * Returns the schema for the given field
-	 *
-	 * @param string $name
-	 * @return Schema
-	 */
-	public function get($name) {
-		if (!$this->definitions->has($name)) {
-			$this->definitions->set($name, new Schema());
-		}
-		return $this->definitions->get($name);
-	}
+    /**
+     * Sets the field.
+     *
+     * @param string name
+     * @param Schema $schame
+     */
+    public function set($name, Schema $schema)
+    {
+        $this->definitions[$name] = $schema;
+    }
 
-	/**
-	 * Sets the field
-	 *
-	 * @param string name
-	 * @param Schema $schame
-	 */
-	public function set($name, Schema $schema) {
-		$this->definitions->set($name, $schema);
-	}
+    /**
+     * Sets all definitions from another definitions collection. Will overwrite existing ones.
+     *
+     * @param Definitions $definitions
+     */
+    public function setAll(Definitions $definitions)
+    {
+        foreach ($definitions as $name => $schema) {
+            $this->set($name, $schema);
+        }
+    }
 
-	/**
-	 * Sets all definitions from another definitions collection. Will overwrite existing ones.
-	 *
-	 * @param Definitions $definitions
-	 */
-	public function setAll(Definitions $definitions) {
-		foreach ($definitions as $name => $schema) {
-			$this->set($name, $schema);
-		}
-	}
+    /**
+     * Removes the given field.
+     *
+     * @param string $name
+     */
+    public function remove($name)
+    {
+        unset($this->definitions[$name]);
+    }
 
-	/**
-	 * Removes the given field
-	 *
-	 * @param string $name
-	 */
-	public function remove($name) {
-		$this->definitions->remove($name);
-	}
+    /**
+     * Returns definitions has a schema with the given name.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->definitions[$name]);
+    }
 
-	/**
-	 * Returns definitions has a schema with the given name
-	 *
-	 * @param string $name
-	 * @return bool
-	 */
-	public function has($name) {
-		return $this->definitions->has($name);
-	}
+    /**
+     * Returns whether the given schema exists.
+     *
+     * @param Schema $schema
+     *
+     * @return bool
+     */
+    public function contains(Schema $schema)
+    {
+        return $this->definitions->contains($schema);
+    }
 
-	/**
-	 * Returns whether the given schema exists
-	 *
-	 * @param Schema $schema
-	 * @return bool
-	 */
-	public function contains(Schema $schema) {
-		return $this->definitions->contains($schema);
-	}
+    public function current()
+    {
+        return $this->definitions->current();
+    }
 
-	public function current() {
-		return $this->definitions->current();
-	}
+    public function key()
+    {
+        return $this->definitions->key();
+    }
 
-	public function key() {
-		return $this->definitions->key();
-	}
+    public function next()
+    {
+        return $this->definitions->next();
+    }
 
-	public function next() {
-		return $this->definitions->next();
-	}
+    public function rewind()
+    {
+        return $this->definitions->rewind();
+    }
 
-	public function rewind() {
-		return $this->definitions->rewind();
-	}
-
-	public function valid() {
-		return $this->definitions->valid();
-	}
+    public function valid()
+    {
+        return $this->definitions->valid();
+    }
 }
