@@ -7,13 +7,13 @@ class SecurityScheme
     /** @var string */
     private $name;
 
-    public function __construct($name, $contents = [])
+    public function __construct($name, $data = [])
     {
         $this->name = $name;
-        $this->parse($contents);
+        $this->merge($contents);
     }
 
-    private function parse($contents = [])
+    protected function doMerge($data, $overwrite = false)
     {
     }
 }

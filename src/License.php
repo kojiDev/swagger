@@ -16,12 +16,12 @@ class License extends AbstractModel implements Arrayable
     /** @var string */
     private $name;
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         MergeHelper::mergeFields($this->name, $data['name'] ?? null, $overwrite);
 

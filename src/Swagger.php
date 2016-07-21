@@ -16,8 +16,6 @@ use gossi\swagger\Util\MergeHelper;
 use phootwork\collection\CollectionUtils;
 use phootwork\collection\Map;
 use phootwork\file\exception\FileNotFoundException;
-use phootwork\file\File;
-use phootwork\json\Json;
 use phootwork\lang\Arrayable;
 
 class Swagger extends AbstractModel implements Arrayable
@@ -64,23 +62,15 @@ class Swagger extends AbstractModel implements Arrayable
      */
     public static function fromFile($filename)
     {
-        $file = new File($filename);
-
-        if (!$file->exists()) {
-            throw new FileNotFoundException(sprintf('File not found at: %s', $filename));
-        }
-
-        $json = Json::decode($file->read());
-
-        return new static($json);
+        return new static(json_decode(file_get_contents($filename), true));
     }
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         MergeHelper::mergeFields($this->host, $data['host'] ?? null, $overwrite);
         MergeHelper::mergeFields($this->basePath, $data['basePath'] ?? null, $overwrite);

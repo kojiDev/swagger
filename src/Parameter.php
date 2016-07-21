@@ -31,12 +31,12 @@ class Parameter extends AbstractModel implements Arrayable
     /** @var bool */
     private $allowEmptyValue = false;
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         $data = CollectionUtils::toMap($data);
 

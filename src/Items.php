@@ -16,12 +16,12 @@ class Items extends AbstractModel implements Arrayable
     use ItemsPart;
     use ExtensionPart;
 
-    public function __construct($contents = [])
+    public function __construct($data = [])
     {
-        $this->parse($contents);
+        $this->merge($data);
     }
 
-    private function parse($contents = [])
+    protected function parse($contents = [])
     {
         $data = CollectionUtils::toMap($contents);
 

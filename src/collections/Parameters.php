@@ -14,12 +14,12 @@ final class Parameters extends AbstractModel implements Arrayable, \Iterator
 
     private $parameters = [];
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         $map = CollectionUtils::toMap($data);
 

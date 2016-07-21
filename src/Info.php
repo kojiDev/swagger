@@ -27,12 +27,12 @@ class Info extends AbstractModel implements Arrayable
     /** @var string */
     private $version;
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         $this->contact = new Contact($data['contact'] ?? []);
         $this->license = new License($data['license'] ?? []);

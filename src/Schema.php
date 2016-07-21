@@ -53,7 +53,7 @@ class Schema extends AbstractModel implements Arrayable
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         $this->required = $data['required'] ?? null;
         $this->properties = new Definitions($data['properties'] ?? []);

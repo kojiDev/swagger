@@ -7,6 +7,16 @@ use phootwork\collection\CollectionUtils;
 
 abstract class AbstractModel
 {
+    public function merge($data, $overwrite = false)
+    {
+        return $this->doMerge($this->normalize($data), $overwrite);
+    }
+
+    protected function doMerge($data, $overwrite = false)
+    {
+        $this->parse($data);
+    }
+
     public function toArray()
     {
         $return = [];
@@ -69,6 +79,15 @@ abstract class AbstractModel
         }
 
         return $out;
+    }
+
+    protected function normalize($data)
+    {
+        if ($data instanceof \stdClass) {
+            return (array) $data;
+        }
+        
+        return $data;
     }
 
     private function resolve($value)

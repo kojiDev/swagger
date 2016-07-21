@@ -16,14 +16,14 @@ class Path extends AbstractModel implements Arrayable
     /** @var string */
     private $path;
 
-    public function __construct($path, $contents = [])
+    public function __construct($path, $data = [])
     {
         $this->path = $path;
         $this->operations = new Map();
-        $this->parse($contents);
+        $this->merge($data);
     }
 
-    private function parse($contents)
+    protected function parse($contents)
     {
         $data = CollectionUtils::toMap($contents);
 

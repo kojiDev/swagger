@@ -27,18 +27,18 @@ class Response extends AbstractModel implements Arrayable
     /** @var Headers */
     private $headers;
 
-    public function __construct($code, $contents = [])
+    public function __construct($code, $data = [])
     {
         $this->code = $code;
-        $this->parse($contents);
+        $this->merge($data);
     }
 
-    private function parse($contents)
+    protected function parse($contents)
     {
         $data = CollectionUtils::toMap($contents);
 
         $this->examples = $data->get('examples', new Map());
-        $this->headers = new Headers($data->get('headers'));
+        $this->headers = new Headers($data->get('headers', []));
 
         // parts
         $this->parseRef($data);

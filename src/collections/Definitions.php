@@ -10,12 +10,12 @@ class Definitions extends AbstractModel implements Arrayable, \Iterator
 {
     private $definitions = [];
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    public function merge(array $data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
         foreach ($data as $name => $schema) {
             $this->get($name)->merge($schema, $overwrite);

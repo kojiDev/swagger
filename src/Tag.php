@@ -30,10 +30,8 @@ final class Tag extends AbstractModel implements Arrayable
         $this->merge($data);
     }
 
-    public function merge($data, $overwrite = false)
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = $this->normalize($data);
-
         $map = CollectionUtils::toMap($data);
         // parts
         $this->parseDescription($map);
@@ -71,7 +69,7 @@ final class Tag extends AbstractModel implements Arrayable
     /**
      * @param string|array $data
      */
-    private function normalize($data): array
+    protected function normalize($data): array
     {
         if (is_string($data)) {
             return [
@@ -79,6 +77,6 @@ final class Tag extends AbstractModel implements Arrayable
             ];
         }
 
-        return $data;
+        return parent::normalize($data);
     }
 }

@@ -20,13 +20,13 @@ class Header extends AbstractModel implements Arrayable
     /** @var string */
     private $header;
 
-    public function __construct($header, $contents = null)
+    public function __construct($header, $data = [])
     {
         $this->header = $header;
-        $this->parse($contents === null ? new Map() : $contents);
+        $this->merge($data);
     }
 
-    private function parse($contents = [])
+    protected function parse($contents = [])
     {
         $data = CollectionUtils::toMap($contents);
 

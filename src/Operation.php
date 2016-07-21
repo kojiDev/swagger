@@ -36,12 +36,12 @@ class Operation extends AbstractModel implements Arrayable
     /** @var bool */
     private $deprecated = false;
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
-        $this->parse($data);
+        $this->merge($data);
     }
 
-    private function parse(array $data)
+    protected function parse(array $data)
     {
         $this->mergeConsumes($data);
         $this->mergeParameters($data);

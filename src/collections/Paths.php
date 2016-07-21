@@ -17,12 +17,12 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
     /** @var Map */
     private $paths;
 
-    public function __construct($contents = [])
+    public function __construct($data = [])
     {
-        $this->parse($contents === null ? [] : $contents);
+        $this->merge($data);
     }
 
-    private function parse($contents)
+    protected function parse($contents)
     {
         $data = CollectionUtils::toMap($contents);
 
