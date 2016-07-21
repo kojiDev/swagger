@@ -23,18 +23,14 @@ class Path extends AbstractModel implements Arrayable
         $this->merge($data);
     }
 
-    protected function parse($contents)
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
-
         foreach (Swagger::$METHODS as $method) {
-            if ($data->has($method)) {
-                $this->operations->set($method, new Operation($contents[$method]));
+            if (isset($data[$method])) {
+                $this->getOperation($method)->merge($data[$method]);
             }
         }
-
-        // parts
-        $this->parseExtensions($data);
+        $this->mergeExtensions($data);
     }
 
     public function toArray()

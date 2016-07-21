@@ -10,6 +10,7 @@ use gossi\swagger\parts\ProducesPart;
 use gossi\swagger\parts\ResponsesPart;
 use gossi\swagger\parts\SchemesPart;
 use gossi\swagger\parts\TagsPart;
+use gossi\swagger\Util\MergeHelper;
 use phootwork\collection\CollectionUtils;
 use phootwork\lang\Arrayable;
 
@@ -34,24 +35,24 @@ class Operation extends AbstractModel implements Arrayable
     private $operationId;
 
     /** @var bool */
-    private $deprecated = false;
+    private $deprecated;
 
     public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    protected function parse(array $data)
+    protected function doMerge($data, $overwrite = false)
     {
+        MergeHelper::mergeFields($this->summary, $data['summary'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->description, $data['description'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->operationId, $data['operationId'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->deprecated, $data['deprecated'] ?? null, $overwrite);
+
         $this->mergeConsumes($data);
         $this->mergeParameters($data);
 
         $data = CollectionUtils::toMap($data);
-
-        $this->summary = $data->get('summary');
-        $this->description = $data->get('description');
-        $this->operationId = $data->get('operationId');
-        $this->deprecated = $data->has('deprecated') && $data->get('deprecated');
 
         // parts
         $this->parseProduces($data);

@@ -67,6 +67,10 @@ class Swagger extends AbstractModel implements Arrayable
 
     public function __construct($data = [])
     {
+        $this->info = new Info();
+        $this->definitions = new Definitions();
+        $this->paths = new Paths();
+
         $this->merge($data);
     }
 
@@ -75,9 +79,9 @@ class Swagger extends AbstractModel implements Arrayable
         MergeHelper::mergeFields($this->host, $data['host'] ?? null, $overwrite);
         MergeHelper::mergeFields($this->basePath, $data['basePath'] ?? null, $overwrite);
 
-        $this->info = new Info($data['info'] ?? []);
-        $this->definitions = new Definitions($data['definitions'] ?? []);
-        $this->paths = new Paths($data['paths'] ?? []);
+        $this->info->merge($data['info'] ?? [], $overwrite);
+        $this->definitions->merge($data['definitions'] ?? [], $overwrite);
+        $this->paths->merge($data['paths'] ?? [], $overwrite);
 
         $this->mergeConsumes($data);
         $this->mergeParameters($data);

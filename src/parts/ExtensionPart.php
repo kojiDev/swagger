@@ -10,6 +10,11 @@ trait ExtensionPart
 
     private function parseExtensions(Map $data)
     {
+        $this->mergeExtensions((array) $data);
+    }
+
+    private function mergeExtensions(array $data)
+    {
         foreach ($data as $name => $value) {
             if (0 === strpos($name, 'x-')) {
                 $this->extensions[substr($name, 2)] = $value;

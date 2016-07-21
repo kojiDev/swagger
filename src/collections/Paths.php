@@ -14,41 +14,32 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
 {
     use ExtensionPart;
 
-    /** @var Map */
-    private $paths;
+    private $paths = [];
 
     public function __construct($data = [])
     {
         $this->merge($data);
     }
 
-    protected function parse($contents)
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
-
-        // paths
-        $this->paths = new Map();
-        foreach ($data as $p => $path) {
-            if (!Text::create($p)->startsWith('x-')) {
-                $this->paths->set($p, new Path($p, $contents[$p]));
+        foreach ($data as $key => $path) {
+            if (0 !== strpos($key, 'x-')) {
+                $this->get($key)->merge($path, $overwrite);
             }
         }
 
-        // extensions
-        $this->parseExtensions($data);
+        $this->mergeExtensions($data);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        // 		$paths = clone $this->paths;
-// 		$paths->setAll($this->getExtensions());
-// 		return $paths->toArray();
-        return CollectionUtils::toArrayRecursive($this->paths);
+        return $this->paths;
     }
 
     public function size()
     {
-        return $this->paths->size();
+        return count($this->paths);
     }
 
     /**
@@ -58,9 +49,9 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
      *
      * @return bool
      */
-    public function has($path)
+    public function has(string $path): bool
     {
-        return $this->paths->has($path);
+        return isset($this->paths[$path]);
     }
 
     /**
@@ -72,7 +63,7 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
      */
     public function contains(Path $path)
     {
-        return $this->paths->contains($path);
+        return in_array($path, $this->paths);
     }
 
     /**
@@ -82,13 +73,13 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
      *
      * @return Path
      */
-    public function get($path)
+    public function get(string $path)
     {
-        if (!$this->paths->has($path)) {
-            $this->paths->set($path, new Path($path));
+        if (!$this->has($path)) {
+            $this->add(new Path($path));
         }
 
-        return $this->paths->get($path);
+        return $this->paths[$path];
     }
 
     /**
@@ -100,7 +91,7 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
      */
     public function add(Path $path)
     {
-        $this->paths->set($path->getPath(), $path);
+        $this->paths[$path->getPath()] = $path;
 
         return $this;
     }
@@ -127,7 +118,7 @@ class Paths extends AbstractModel implements Arrayable, \Iterator
      */
     public function remove($path)
     {
-        $this->paths->remove($path);
+        unset($this->paths[$path]);
 
         return $this;
     }
