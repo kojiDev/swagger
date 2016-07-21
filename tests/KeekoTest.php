@@ -11,13 +11,7 @@ class KeekoTest extends \PHPUnit_Framework_TestCase
 {
     private function fileToArray($filename)
     {
-        $file = new File($filename);
-
-        if (!$file->exists()) {
-            throw new FileNotFoundException(sprintf('File not found at: %s', $filename));
-        }
-
-        return Json::decode($file->read());
+        return json_decode(file_get_contents($filename), true);
     }
 
     public function testUser()
