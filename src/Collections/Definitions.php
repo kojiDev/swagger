@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\Collections;
+namespace EXSyst\Swagger\Collections;
 
-use EGetick\Swagger\Schema;
-use EGetick\Swagger\AbstractModel;
+use EXSyst\Swagger\Schema;
+use EXSyst\Swagger\AbstractModel;
 
 final class Definitions extends AbstractModel
 {

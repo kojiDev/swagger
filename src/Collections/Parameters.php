@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\Collections;
+namespace EXSyst\Swagger\Collections;
 
-use EGetick\Swagger\Parameter;
-use EGetick\Swagger\Parts\RefPart;
-use EGetick\Swagger\AbstractModel;
+use EXSyst\Swagger\Parameter;
+use EXSyst\Swagger\Parts\RefPart;
+use EXSyst\Swagger\AbstractModel;
 
 final class Parameters extends AbstractModel
 {

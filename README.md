@@ -1,15 +1,15 @@
 # Swagger
 
-[![Build Status](https://travis-ci.org/EGetick/Swagger.svg?branch=master)](https://travis-ci.org/EGetick/Swagger)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/EGetick/Swagger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/EGetick/Swagger)
-[![Code Coverage](https://scrutinizer-ci.com/g/EGetick/Swagger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EGetick/Swagger)
+[![Build Status](https://travis-ci.org/EXSyst/Swagger.svg?branch=master)](https://travis-ci.org/EXSyst/Swagger)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/EXSyst/Swagger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/EXSyst/Swagger)
+[![Code Coverage](https://scrutinizer-ci.com/g/EXSyst/Swagger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EXSyst/Swagger)
 
 A php library to manipulate [Swagger](http://Swagger.io)/[Open API](https://openapis.org) specifications.
 
 ## Installation
 
 ```
-composer require EGetick/Swagger
+composer require EXSyst/Swagger
 ```
 
 ## Usage

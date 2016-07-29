@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Parts\ExtensionPart;
-use EGetick\Swagger\Util\MergeHelper;
+use EXSyst\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Util\MergeHelper;
 
 final class Contact extends AbstractModel
 {

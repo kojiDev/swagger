@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Parts\ExtensionPart;
-use EGetick\Swagger\Parts\UrlPart;
-use EGetick\Swagger\Util\MergeHelper;
+use EXSyst\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Parts\UrlPart;
+use EXSyst\Swagger\Util\MergeHelper;
 
 final class License extends AbstractModel
 {

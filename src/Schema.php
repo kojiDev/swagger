@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Collections\Definitions;
-use EGetick\Swagger\Parts\DescriptionPart;
-use EGetick\Swagger\Parts\ExtensionPart;
-use EGetick\Swagger\Parts\ExternalDocsPart;
-use EGetick\Swagger\Parts\ItemsPart;
-use EGetick\Swagger\Parts\RefPart;
-use EGetick\Swagger\Parts\TypePart;
-use EGetick\Swagger\Util\MergeHelper;
+use EXSyst\Swagger\Collections\Definitions;
+use EXSyst\Swagger\Parts\DescriptionPart;
+use EXSyst\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Parts\ExternalDocsPart;
+use EXSyst\Swagger\Parts\ItemsPart;
+use EXSyst\Swagger\Parts\RefPart;
+use EXSyst\Swagger\Parts\TypePart;
+use EXSyst\Swagger\Util\MergeHelper;
 
 final class Schema extends AbstractModel
 {

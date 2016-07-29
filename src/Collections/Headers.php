@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\Collections;
+namespace EXSyst\Swagger\Collections;
 
-use EGetick\Swagger\Header;
-use EGetick\Swagger\AbstractModel;
+use EXSyst\Swagger\Header;
+use EXSyst\Swagger\AbstractModel;
 
 final class Headers extends AbstractModel
 {

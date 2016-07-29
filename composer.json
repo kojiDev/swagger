@@ -11,12 +11,12 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"EGetick\\Swagger\\" : "src/"
+			"EXSyst\\Swagger\\" : "src/"
 		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"EGetick\\Swagger\\tests\\" : "tests/"
+			"EXSyst\\Swagger\\tests\\" : "tests/"
 		}
 	},
 	"require" : {

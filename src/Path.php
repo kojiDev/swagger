@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Parts\ExtensionPart;
 
 final class Path extends AbstractModel
 {

@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Parts\ConsumesPart;
-use EGetick\Swagger\Parts\ExtensionPart;
-use EGetick\Swagger\Parts\ExternalDocsPart;
-use EGetick\Swagger\Parts\ParametersPart;
-use EGetick\Swagger\Parts\ProducesPart;
-use EGetick\Swagger\Parts\ResponsesPart;
-use EGetick\Swagger\Parts\SchemesPart;
-use EGetick\Swagger\Parts\TagsPart;
-use EGetick\Swagger\Util\MergeHelper;
+use EXSyst\Swagger\Parts\ConsumesPart;
+use EXSyst\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Parts\ExternalDocsPart;
+use EXSyst\Swagger\Parts\ParametersPart;
+use EXSyst\Swagger\Parts\ProducesPart;
+use EXSyst\Swagger\Parts\ResponsesPart;
+use EXSyst\Swagger\Parts\SchemesPart;
+use EXSyst\Swagger\Parts\TagsPart;
+use EXSyst\Swagger\Util\MergeHelper;
 
 final class Operation extends AbstractModel
 {

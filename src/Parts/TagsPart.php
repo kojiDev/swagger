@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\Parts;
+namespace EXSyst\Swagger\Parts;
 
-use EGetick\Swagger\Tag;
+use EXSyst\Swagger\Tag;
 
 /**
  * @internal

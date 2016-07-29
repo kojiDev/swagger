@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\tests;
+namespace EXSyst\Swagger\tests;
 
-use EGetick\Swagger\Swagger;
+use EXSyst\Swagger\Swagger;
 
 class SwaggerTest extends \PHPUnit_Framework_TestCase
 {

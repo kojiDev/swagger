@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\tests;
+namespace EXSyst\Swagger\tests;
 
-use EGetick\Swagger\Collections\Definitions;
-use EGetick\Swagger\Collections\Parameters;
-use EGetick\Swagger\Collections\Paths;
-use EGetick\Swagger\Collections\Responses;
-use EGetick\Swagger\Operation;
-use EGetick\Swagger\Parameter;
-use EGetick\Swagger\Path;
-use EGetick\Swagger\Response;
-use EGetick\Swagger\Schema;
-use EGetick\Swagger\Swagger;
+use EXSyst\Swagger\Collections\Definitions;
+use EXSyst\Swagger\Collections\Parameters;
+use EXSyst\Swagger\Collections\Paths;
+use EXSyst\Swagger\Collections\Responses;
+use EXSyst\Swagger\Operation;
+use EXSyst\Swagger\Parameter;
+use EXSyst\Swagger\Path;
+use EXSyst\Swagger\Response;
+use EXSyst\Swagger\Schema;
+use EXSyst\Swagger\Swagger;
 
 class CollectionsTest extends \PHPUnit_Framework_TestCase
 {

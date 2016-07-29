@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger\Parts;
+namespace EXSyst\Swagger\Parts;
 
 /**
  * @internal

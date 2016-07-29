@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace EGetick\Swagger;
+namespace EXSyst\Swagger;
 
-use EGetick\Swagger\Parts\ExtensionPart;
-use EGetick\Swagger\Parts\ItemsPart;
-use EGetick\Swagger\Parts\RefPart;
-use EGetick\Swagger\Parts\TypePart;
+use EXSyst\Swagger\Parts\ExtensionPart;
+use EXSyst\Swagger\Parts\ItemsPart;
+use EXSyst\Swagger\Parts\RefPart;
+use EXSyst\Swagger\Parts\TypePart;
 
 final class Items extends AbstractModel
 {
