@@ -1,15 +1,15 @@
-# swagger
+# Swagger
 
-[![Build Status](https://travis-ci.org/gossi/swagger.svg?branch=master)](https://travis-ci.org/gossi/swagger)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gossi/swagger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gossi/swagger)
-[![Code Coverage](https://scrutinizer-ci.com/g/gossi/swagger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/gossi/swagger)
+[![Build Status](https://travis-ci.org/EGetick/Swagger.svg?branch=master)](https://travis-ci.org/EGetick/Swagger)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/EGetick/Swagger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/EGetick/Swagger)
+[![Code Coverage](https://scrutinizer-ci.com/g/EGetick/Swagger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EGetick/Swagger)
 
-A php library to manipulate [swagger](http://swagger.io)/[Open API](https://openapis.org) specifications.
+A php library to manipulate [Swagger](http://Swagger.io)/[Open API](https://openapis.org) specifications.
 
 ## Installation
 
 ```
-composer require gossi/swagger
+composer require EGetick/Swagger
 ```
 
 ## Usage

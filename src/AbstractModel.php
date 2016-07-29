@@ -1,12 +1,23 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use phootwork\collection\Collection;
-use phootwork\collection\CollectionUtils;
+namespace EGetick\Swagger;
 
+/**
+ * @internal
+ */
 abstract class AbstractModel
 {
+    const REQUIRED = true;
+
     public function merge($data, $overwrite = false)
     {
         return $this->doMerge($this->normalize($data), $overwrite);
@@ -35,50 +46,11 @@ abstract class AbstractModel
             }
         }
 
+        if (is_array($return) && 0 === count($return) && !static::REQUIRED) {
+            $return = null;
+        }
+
         return $return;
-    }
-
-    protected function export()
-    {
-        $cols = func_get_args();
-
-        // add cols
-        if (method_exists($this, 'hasRef') && $this->hasRef()) {
-            $cols = array_merge(['$ref'], $cols);
-        }
-
-        // flatten array
-        $fields = [];
-        array_walk_recursive($cols, function ($a) use (&$fields) { $fields[] = $a; });
-
-        $out = [];
-        $refl = new \ReflectionClass(get_class($this));
-
-        foreach ($fields as $field) {
-            if ($field == 'tags') {
-                $val = $this->exportTags();
-            } else {
-                $prop = $refl->getProperty($field == '$ref' ? 'ref' : $field);
-                $prop->setAccessible(true);
-                $val = $prop->getValue($this);
-
-                if ($val instanceof Collection) {
-                    $val = CollectionUtils::toArrayRecursive($val);
-                } elseif (method_exists($val, 'toArray')) {
-                    $val = $val->toArray();
-                }
-            }
-
-            if ($field == 'required' && is_bool($val) || !empty($val)) {
-                $out[$field] = $val;
-            }
-        }
-
-        if (method_exists($this, 'getExtensions')) {
-            $out = array_merge($out, $this->getExtensions());
-        }
-
-        return $out;
     }
 
     protected function normalize($data)
@@ -86,7 +58,7 @@ abstract class AbstractModel
         if ($data instanceof \stdClass) {
             return (array) $data;
         }
-        
+
         return $data;
     }
 

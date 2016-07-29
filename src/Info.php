@@ -1,14 +1,24 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Info extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Info extends AbstractModel
 {
+    const REQUIRED = false;
+
     use DescriptionPart;
     use ExtensionPart;
 
@@ -29,32 +39,39 @@ class Info extends AbstractModel implements Arrayable
 
     public function __construct($data = [])
     {
+        $this->contact = new Contact();
+        $this->license = new License();
+
         $this->merge($data);
     }
 
     protected function doMerge($data, $overwrite = false)
     {
-        $this->contact = new Contact($data['contact'] ?? []);
-        $this->license = new License($data['license'] ?? []);
+        MergeHelper::mergeFields($this->title, $data['title'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->termsOfService, $data['termsOfService'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->version, $data['version'] ?? null, $overwrite);
 
-        $data = CollectionUtils::toMap($data);
+        $this->contact->merge($data['contact'] ?? [], $overwrite);
+        $this->license->merge($data['license'] ?? [], $overwrite);
 
-        $this->title = $data->get('title');
-        $this->termsOfService = $data->get('termsOfService');
-        $this->version = $data->get('version');
-
-        // extensions
-        $this->parseDescription($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('version', 'title', 'description', 'termsOfService', 'contact', 'license');
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'termsOfService' => $this->termsOfService,
+            'contact' => $this->contact,
+            'license' => $this->license,
+            'version' => $this->version,
+        ];
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTitle()
     {
@@ -62,7 +79,7 @@ class Info extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      *
      * @return $this
      */
@@ -74,7 +91,7 @@ class Info extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTerms()
     {
@@ -82,9 +99,7 @@ class Info extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $terms
-     *
-     * @return $this
+     * @param string|null $terms
      */
     public function setTerms($terms)
     {
@@ -110,7 +125,7 @@ class Info extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getVersion()
     {
@@ -118,9 +133,7 @@ class Info extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $version
-     *
-     * @return $this
+     * @param string|null $version
      */
     public function setVersion($version)
     {

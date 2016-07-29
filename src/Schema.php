@@ -1,19 +1,26 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\collections\Definitions;
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ExternalDocsPart;
-use gossi\swagger\parts\ItemsPart;
-use gossi\swagger\parts\RefPart;
-use gossi\swagger\parts\TypePart;
-use phootwork\collection\ArrayList;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Schema extends AbstractModel implements Arrayable
+use EGetick\Swagger\Collections\Definitions;
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ExternalDocsPart;
+use EGetick\Swagger\Parts\ItemsPart;
+use EGetick\Swagger\Parts\RefPart;
+use EGetick\Swagger\Parts\TypePart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Schema extends AbstractModel
 {
     use RefPart;
     use TypePart;
@@ -36,13 +43,13 @@ class Schema extends AbstractModel implements Arrayable
     /** @var string */
     private $example;
 
-    /** @var ArrayList|bool */
+    /** @var array|bool */
     private $required;
 
     /** @var Definitions */
     private $properties;
 
-    /** @var ArrayList */
+    /** @var array */
     private $allOf = [];
 
     /** @var Schema */
@@ -50,35 +57,38 @@ class Schema extends AbstractModel implements Arrayable
 
     public function __construct(array $data = [])
     {
+        $this->properties = new Definitions();
         $this->merge($data);
     }
 
     protected function doMerge($data, $overwrite = false)
     {
-        $this->required = $data['required'] ?? null;
-        $this->properties = new Definitions($data['properties'] ?? []);
+        MergeHelper::mergeFields($this->required, $data['required'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->title, $data['title'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->discriminator, $data['discriminator'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->readOnly, $data['readOnly'] ?? null, $overwrite);
+        MergeHelper::mergeFields($this->example, $data['example'] ?? null, $overwrite);
+
+        $this->properties->merge($data['properties'] ?? [], $overwrite);
 
         foreach ($data['allOf'] ?? [] as $schema) {
             $this->allOf[] = new self($schema);
         }
 
-        $data = CollectionUtils::toMap($data);
+        if (isset($data['additionalProperties'])) {
+            if (null === $this->additionalProperties) {
+                $this->additionalProperties = new self();
+            }
 
-        $this->title = $data->get('title');
-        $this->discriminator = $data->get('discriminator');
-        $this->readOnly = $data->has('readOnly') && $data->get('readOnly');
-        $this->example = $data->get('example');
-        if ($data->has('additionalProperties')) {
-            $this->additionalProperties = new self($data->get('additionalProperties'));
+            $this->additionalProperties->merge($data['additionalProperties'], $overwrite);
         }
 
-        // parts
-        $this->parseRef($data);
-        $this->parseType($data);
-        $this->parseDescription($data);
-        $this->parseItems($data);
-        $this->parseExternalDocs($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExternalDocs($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeItems($data, $overwrite);
+        $this->mergeRef($data, $overwrite);
+        $this->mergeType($data, $overwrite);
     }
 
     protected function doExport()
@@ -88,17 +98,17 @@ class Schema extends AbstractModel implements Arrayable
         }
 
         return array_merge([
-            'title' => $this->getTitle(),
-            'discriminator' => $this->getDiscriminator(),
-            'description' => $this->getDescription(),
-            'readOnly' => $this->isReadOnly() ?: null,
-            'example' => $this->getExample(),
-            'externalDocs' => $this->getExternalDocs(),
-            'items' => $this->getItems()->toArray() ?: null,
-            'required' => $this->getRequired(),
-            'properties' => $this->getProperties()->toArray() ?: null,
-            'additionalProperties' => $this->getAdditionalProperties(),
-            'allOf' => $this->getAllOf() ?: null,
+            'title' => $this->title,
+            'discriminator' => $this->discriminator,
+            'description' => $this->description,
+            'readOnly' => $this->readOnly,
+            'example' => $this->example,
+            'externalDocs' => $this->externalDocs,
+            'items' => $this->items,
+            'required' => $this->required,
+            'properties' => $this->properties,
+            'additionalProperties' => $this->additionalProperties,
+            'allOf' => $this->allOf ?: null,
         ], $this->doExportType());
     }
 
@@ -123,7 +133,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDiscriminator()
     {
@@ -131,7 +141,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $discriminator
+     * @param string|null $discriminator
      */
     public function setDiscriminator($discriminator)
     {
@@ -141,7 +151,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isReadOnly()
     {
@@ -149,7 +159,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param bool $readOnly
+     * @param bool|null $readOnly
      */
     public function setReadOnly($readOnly)
     {
@@ -159,7 +169,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getExample()
     {
@@ -167,7 +177,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $example
+     * @param string|null $example
      */
     public function setExample($example)
     {
@@ -177,7 +187,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTitle()
     {
@@ -185,7 +195,7 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @param string $title
+     * @param string|null $title
      *
      * @return $this
      */
@@ -205,9 +215,9 @@ class Schema extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return ArrayList
+     * @return array
      */
-    public function getAllOf()
+    public function getAllOf(): array
     {
         return $this->allOf;
     }

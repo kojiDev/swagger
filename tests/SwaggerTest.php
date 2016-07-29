@@ -1,8 +1,17 @@
 <?php
 
-namespace gossi\swagger\tests;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\Swagger;
+namespace EGetick\Swagger\tests;
+
+use EGetick\Swagger\Swagger;
 
 class SwaggerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,14 +26,12 @@ class SwaggerTest extends \PHPUnit_Framework_TestCase
         $swagger = new Swagger();
         $swagger->setBasePath('/api');
         $swagger->setHost('http://example.com');
-        $swagger->setVersion('2.1');
 
         $this->assertEquals('/api', $swagger->getBasePath());
         $this->assertEquals('http://example.com', $swagger->getHost());
-        $this->assertEquals('2.1', $swagger->getVersion());
 
         $this->assertEquals([
-            'swagger' => '2.1',
+            'Swagger' => '2.0',
             'host' => 'http://example.com',
             'basePath' => '/api',
         ], $swagger->toArray());

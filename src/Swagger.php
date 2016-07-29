@@ -1,24 +1,29 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\collections\Definitions;
-use gossi\swagger\collections\Paths;
-use gossi\swagger\parts\ConsumesPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ExternalDocsPart;
-use gossi\swagger\parts\ParametersPart;
-use gossi\swagger\parts\ProducesPart;
-use gossi\swagger\parts\ResponsesPart;
-use gossi\swagger\parts\SchemesPart;
-use gossi\swagger\parts\TagsPart;
-use gossi\swagger\Util\MergeHelper;
-use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
-use phootwork\file\exception\FileNotFoundException;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Swagger extends AbstractModel implements Arrayable
+use EGetick\Swagger\Collections\Definitions;
+use EGetick\Swagger\Collections\Paths;
+use EGetick\Swagger\Parts\ConsumesPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ExternalDocsPart;
+use EGetick\Swagger\Parts\ParametersPart;
+use EGetick\Swagger\Parts\ProducesPart;
+use EGetick\Swagger\Parts\ResponsesPart;
+use EGetick\Swagger\Parts\SchemesPart;
+use EGetick\Swagger\Parts\TagsPart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Swagger extends AbstractModel
 {
     use SchemesPart;
     use ConsumesPart;
@@ -30,9 +35,6 @@ class Swagger extends AbstractModel implements Arrayable
     use ExtensionPart;
 
     public static $METHODS = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
-
-    /** @var string */
-    private $swagger = '2.0';
 
     /** @var Info */
     private $info;
@@ -49,14 +51,11 @@ class Swagger extends AbstractModel implements Arrayable
     /** @var Definitions */
     private $definitions;
 
-    /** @var Map */
-    private $securityDefinitions;
+    /** @var array */
+    private $securityDefinitions = [];
 
     /**
      * @param string $filename
-     *
-     * @throws FileNotFoundException
-     * @throws JsonException
      *
      * @return static
      */
@@ -79,35 +78,47 @@ class Swagger extends AbstractModel implements Arrayable
         MergeHelper::mergeFields($this->host, $data['host'] ?? null, $overwrite);
         MergeHelper::mergeFields($this->basePath, $data['basePath'] ?? null, $overwrite);
 
-        $this->info->merge($data['info'] ?? [], $overwrite);
-        $this->definitions->merge($data['definitions'] ?? [], $overwrite);
-        $this->paths->merge($data['paths'] ?? [], $overwrite);
-
-        $this->mergeConsumes($data);
-        $this->mergeParameters($data);
-
-        $data = CollectionUtils::toMap($data);
-
-        // security schemes
-        $this->securityDefinitions = $data->get('securityDefinitions', new Map());
-        foreach ($this->securityDefinitions as $s => $def) {
-            $this->securityDefinitions->set($s, new SecurityScheme($s, $def));
+        if (isset($data['info'])) {
+            $this->info->merge($data['info'], $overwrite);
+        }
+        if (isset($data['definitions'])) {
+            $this->getDefinitions()->merge($data['definitions'], $overwrite);
+        }
+        if (isset($data['paths'])) {
+            $this->getPaths()->merge($data['paths'], $overwrite);
         }
 
-        // parts
-        $this->parseSchemes($data);
-        $this->parseProduces($data);
-        $this->parseTags($data);
-        $this->parseResponses($data);
-        $this->parseExternalDocs($data);
-        $this->parseExtensions($data);
+        $this->mergeConsumes($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeExternalDocs($data, $overwrite);
+        $this->mergeParameters($data, $overwrite);
+        $this->mergeProduces($data, $overwrite);
+        $this->mergeResponses($data, $overwrite);
+        $this->mergeSchemes($data, $overwrite);
+        $this->mergeTags($data, $overwrite);
+
+        foreach ($this->securityDefinitions as $s => $def) {
+            $this->securityDefinitions[$s] = new SecurityScheme($s, $def);
+        }
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('swagger', 'info', 'host', 'basePath', 'schemes', 'consumes', 'produces',
-            'paths', 'definitions', 'parameters', 'responses', 'tags', 'externalDocs'
-        );
+        return [
+            'Swagger' => '2.0',
+            'info' => $this->info,
+            'host' => $this->host,
+            'basePath' => $this->basePath,
+            'schemes' => $this->getSchemes() ?: null,
+            'consumes' => $this->getConsumes() ?: null,
+            'produces' => $this->getProduces() ?: null,
+            'paths' => $this->paths,
+            'definitions' => $this->definitions,
+            'parameters' => $this->parameters ?: null,
+            'responses' => $this->responses,
+            'tags' => $this->tags ?: null,
+            'externalDocs' => $this->externalDocs,
+        ];
     }
 
     /**
@@ -115,19 +126,7 @@ class Swagger extends AbstractModel implements Arrayable
      */
     public function getVersion()
     {
-        return $this->swagger;
-    }
-
-    /**
-     * @param string $version
-     *
-     * @return $this
-     */
-    public function setVersion($version)
-    {
-        $this->swagger = $version;
-
-        return $this;
+        return '2.0';
     }
 
     /**
@@ -195,19 +194,10 @@ class Swagger extends AbstractModel implements Arrayable
     }
 
     /**
-     * @return Map
+     * @return array
      */
     public function getSecurityDefinitions()
     {
         return $this->securityDefinitions;
     }
-
-// 	/**
-// 	 *
-// 	 * @param Map $securityDefinitions
-// 	 */
-// 	public function setSecurityDefinitions(Map $securityDefinitions) {
-// 		$this->securityDefinitions = $securityDefinitions;
-// 		return $this;
-// 	}
 }

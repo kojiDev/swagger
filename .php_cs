@@ -1,15 +1,27 @@
 <?php
+
 use Symfony\CS\Config\Config;
 use Symfony\CS\Finder\DefaultFinder;
 use Symfony\CS\Fixer\Contrib\HeaderCommentFixer;
 use Symfony\CS\FixerInterface;
 
 $finder = DefaultFinder::create()
-	->exclude('fixtures')
-    ->in(__DIR__ . '/src')
-    ->in(__DIR__ . '/tests')
+    ->in(__DIR__)
 ;
 
+$header = <<<EOF
+This file is part of the Swagger package.
+
+(c) EXSyst
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+EOF;
+HeaderCommentFixer::setHeader($header);
+
 return Config::create()
-	->finder($finder)
-	->setUsingCache(false);
+    ->level(FixerInterface::SYMFONY_LEVEL)
+    ->fixers(array('header_comment'))
+    ->finder($finder)
+    ->setUsingCache(true)
+;

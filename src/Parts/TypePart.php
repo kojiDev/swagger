@@ -1,9 +1,21 @@
 <?php
 
-namespace gossi\swagger\parts;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use phootwork\collection\Map;
+namespace EGetick\Swagger\Parts;
 
+use EGetick\Swagger\Util\MergeHelper;
+
+/**
+ * @internal
+ */
 trait TypePart
 {
     /** @var string */
@@ -54,58 +66,30 @@ trait TypePart
     /** @var float */
     private $multipleOf;
 
-    private function parseType(Map $data)
+    private function mergeType(array $data, bool $overwrite)
     {
-        $this->type = $data->get('type');
-        $this->format = $data->get('format');
-        $this->collectionFormat = $data->get('collectionFormat');
-        $this->default = $data->get('default');
-        $this->maximum = $data->get('maximum');
-        $this->exclusiveMaximum = $data->get('exclusiveMaximum');
-        $this->minimum = $data->get('minimum');
-        $this->exclusiveMinimum = $data->get('exclusiveMinimum');
-        $this->maxLength = $data->get('maxLength');
-        $this->minLength = $data->get('minLength');
-        $this->pattern = $data->get('pattern');
-        $this->maxItems = $data->get('maxItems');
-        $this->minItems = $data->get('minItems');
-        $this->uniqueItems = $data->get('uniqueItems');
-        $this->enum = $data->get('enum');
-        $this->multipleOf = $data->get('multipleOf');
+        foreach ($this->getTypeFields() as $field) {
+            MergeHelper::mergeFields($this->{$field}, $data[$field] ?? null, $overwrite);
+        }
     }
 
     protected function doExportType()
     {
-        return [
-            'type' => $this->type,
-            'format' => $this->format,
-            'collectionFormat' => $this->collectionFormat,
-            'default' => $this->default,
-            'maximum' => $this->maximum,
-            'exclusiveMaximum' => $this->exclusiveMaximum,
-            'minimum' => $this->exclusiveMaximum,
-            'exclusiveMinimum' => $this->exclusiveMinimum,
-            'maxLength' => $this->maxLength,
-            'minLength' => $this->minLength,
-            'pattern' => $this->pattern,
-            'maxItems' => $this->maxItems,
-            'minItems' => $this->minItems,
-            'uniqueItems' => $this->uniqueItems,
-            'enum' => $this->enum,
-            'multipleOf' => $this->multipleOf,
-        ];
+        $return = [];
+        foreach ($this->getTypeFields() as $field) {
+            $return[$field] = $this->{$field};
+        }
+
+        return $return;
     }
 
-    private function getTypeExportFields()
+    private function getTypeFields(): array
     {
-        return ['type', 'format', 'collectionFormat', 'default', 'maximum', 'exclusiveMaximum',
-            'minimum', 'exclusiveMinimum', 'maxLength', 'minLength', 'pattern', 'maxItems',
-            'minItems', 'uniqueItems', 'enum', 'multipleOf',
-        ];
+        return ['type', 'format', 'collectionFormat', 'default', 'maximum', 'exclusiveMaximum', 'minimum', 'exclusiveMinimum', 'maxLength', 'minLength', 'pattern', 'maxItems', 'minItems', 'uniqueItems', 'enum', 'multipleOf'];
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getType()
     {
@@ -113,7 +97,7 @@ trait TypePart
     }
 
     /**
-     * @param string $type
+     * @param string|null $type
      *
      * @return $this
      */
@@ -125,7 +109,7 @@ trait TypePart
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFormat()
     {
@@ -135,7 +119,7 @@ trait TypePart
     /**
      * Sets the extending format for the type.
      *
-     * @param string $format
+     * @param string|null $format
      *
      * @return $this
      */
@@ -147,7 +131,7 @@ trait TypePart
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCollectionFormat()
     {
@@ -167,7 +151,7 @@ trait TypePart
      * Default value is `csv`.
      *
      *
-     * @param string $collectionFormat
+     * @param string|null $collectionFormat
      *
      * @return $this
      */
@@ -187,7 +171,7 @@ trait TypePart
     }
 
     /**
-     * @param mixed $default
+     * @param mixed|null $default
      *
      * @return $this
      */
@@ -199,7 +183,7 @@ trait TypePart
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getMaximum()
     {
@@ -207,7 +191,7 @@ trait TypePart
     }
 
     /**
-     * @param float $maximum
+     * @param float|null $maximum
      *
      * @return $this
      */
@@ -219,7 +203,7 @@ trait TypePart
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isExclusiveMaximum()
     {
@@ -227,7 +211,7 @@ trait TypePart
     }
 
     /**
-     * @param bool $exclusiveMaximum
+     * @param bool|null $exclusiveMaximum
      *
      * @return $this
      */
@@ -239,7 +223,7 @@ trait TypePart
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getMinimum()
     {
@@ -247,7 +231,7 @@ trait TypePart
     }
 
     /**
-     * @param float $minimum
+     * @param float|null $minimum
      *
      * @return $this
      */
@@ -259,7 +243,7 @@ trait TypePart
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isExclusiveMinimum()
     {
@@ -267,7 +251,7 @@ trait TypePart
     }
 
     /**
-     * @param bool $exclusiveMinimum
+     * @param bool|null $exclusiveMinimum
      *
      * @return $this
      */
@@ -279,7 +263,7 @@ trait TypePart
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaxLength()
     {
@@ -287,7 +271,7 @@ trait TypePart
     }
 
     /**
-     * @param int $maxLength
+     * @param int|null $maxLength
      *
      * @return $this
      */
@@ -299,7 +283,7 @@ trait TypePart
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getMinLength()
     {
@@ -307,7 +291,7 @@ trait TypePart
     }
 
     /**
-     * @param int $minLength
+     * @param int|null $minLength
      *
      * @return $this
      */
@@ -319,7 +303,7 @@ trait TypePart
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPattern()
     {
@@ -327,7 +311,7 @@ trait TypePart
     }
 
     /**
-     * @param string $pattern
+     * @param string|null $pattern
      *
      * @return $thi
      */
@@ -339,7 +323,7 @@ trait TypePart
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaxItems()
     {
@@ -347,7 +331,7 @@ trait TypePart
     }
 
     /**
-     * @param int $maxItems
+     * @param int|null $maxItems
      *
      * @return $this
      */
@@ -359,7 +343,7 @@ trait TypePart
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getMinItems()
     {
@@ -367,7 +351,7 @@ trait TypePart
     }
 
     /**
-     * @param int $minItems
+     * @param int|null $minItems
      *
      * @return $this
      */
@@ -379,7 +363,7 @@ trait TypePart
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function hasUniqueItems()
     {
@@ -387,7 +371,7 @@ trait TypePart
     }
 
     /**
-     * @param bool $uniqueItems
+     * @param bool|null $uniqueItems
      *
      * @return $this
      */
@@ -419,7 +403,7 @@ trait TypePart
     }
 
     /**
-     * @return float
+     * @return float|null
      */
     public function getMultipleOf()
     {
@@ -427,7 +411,7 @@ trait TypePart
     }
 
     /**
-     * @param float $multipleOf
+     * @param float|null $multipleOf
      *
      * @return $this
      */

@@ -1,11 +1,17 @@
 <?php
 
-namespace gossi\swagger\tests;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\Swagger;
-use phootwork\file\exception\FileNotFoundException;
-use phootwork\file\File;
-use phootwork\json\Json;
+namespace EGetick\Swagger\tests;
+
+use EGetick\Swagger\Swagger;
 
 class KeekoTest extends \PHPUnit_Framework_TestCase
 {

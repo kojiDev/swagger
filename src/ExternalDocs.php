@@ -1,15 +1,24 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\UrlPart;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class ExternalDocs extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\UrlPart;
+
+final class ExternalDocs extends AbstractModel
 {
+    const REQUIRED = false;
+
     use DescriptionPart;
     use UrlPart;
     use ExtensionPart;
@@ -19,18 +28,18 @@ class ExternalDocs extends AbstractModel implements Arrayable
         $this->merge($data);
     }
 
-    protected function parse($contents = [])
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
-
-        // parts
-        $this->parseDescription($data);
-        $this->parseUrl($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeUrl($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('description', 'url');
+        return [
+            'description' => $this->description,
+            'url' => $this->url,
+        ];
     }
 }

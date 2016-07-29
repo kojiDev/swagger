@@ -1,18 +1,26 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ItemsPart;
-use gossi\swagger\parts\RefPart;
-use gossi\swagger\parts\RequiredPart;
-use gossi\swagger\parts\SchemaPart;
-use gossi\swagger\parts\TypePart;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Parameter extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ItemsPart;
+use EGetick\Swagger\Parts\RefPart;
+use EGetick\Swagger\Parts\RequiredPart;
+use EGetick\Swagger\Parts\SchemaPart;
+use EGetick\Swagger\Parts\TypePart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Parameter extends AbstractModel
 {
     use RefPart;
     use DescriptionPart;
@@ -28,36 +36,49 @@ class Parameter extends AbstractModel implements Arrayable
     /** @var string */
     private $in;
 
-    /** @var bool */
-    private $allowEmptyValue = false;
+    /** @var bool|null */
+    private $allowEmptyValue;
 
     public function __construct($data = [])
     {
+        if (!isset($data['name']) || !isset($data['in'])) {
+            throw new \InvalidArgumentException('"in" and "name" are required for parameters');
+        }
+
+        $this->name = $data['name'];
+        $this->in = $data['in'];
+
         $this->merge($data);
     }
 
     protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($data);
+        MergeHelper::mergeFields($this->allowEmptyValue, $data['allowEmptyValue'] ?? null, $overwrite);
 
-        $this->name = $data->get('name');
-        $this->in = $data->get('in');
-        $this->allowEmptyValue = $data->has('allowEmptyValue') && $data->get('allowEmptyValue');
-
-        // parts
-        $this->parseRef($data);
-        $this->parseDescription($data);
-        $this->parseSchema($data);
-        $this->parseRequired($data);
-        $this->parseType($data);
-        $this->parseItems($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeItems($data, $overwrite);
+        $this->mergeRef($data, $overwrite);
+        $this->mergeRequired($data, $overwrite);
+        $this->mergeSchema($data, $overwrite);
+        $this->mergeType($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('name', 'in', 'allowEmptyValue', 'required', 'description', 'schema',
-                $this->getTypeExportFields(), 'items');
+        if ($this->hasRef()) {
+            return ['$ref' => $this->getRef()];
+        }
+
+        return array_merge([
+            'name' => $this->name,
+            'in' => $this->in,
+            'allowEmptyValue' => $this->allowEmptyValue,
+            'required' => $this->required,
+            'description' => $this->description,
+            'schema' => $this->schema,
+            'items' => $this->items,
+        ], $this->doExportType());
     }
 
     /**

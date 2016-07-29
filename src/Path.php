@@ -1,25 +1,26 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\ExtensionPart;
-use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Path extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\ExtensionPart;
+
+final class Path extends AbstractModel
 {
     use ExtensionPart;
 
-    private $operations;
+    private $operations = [];
 
-    /** @var string */
-    private $path;
-
-    public function __construct($path, $data = [])
+    public function __construct($data = [])
     {
-        $this->path = $path;
-        $this->operations = new Map();
         $this->merge($data);
     }
 
@@ -30,25 +31,12 @@ class Path extends AbstractModel implements Arrayable
                 $this->getOperation($method)->merge($data[$method]);
             }
         }
-        $this->mergeExtensions($data);
+        $this->mergeExtensions($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return array_merge(
-            CollectionUtils::toArrayRecursive($this->operations),
-            CollectionUtils::toArrayRecursive($this->getExtensions())
-        );
-    }
-
-    /**
-     * Returns this path.
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
+        return $this->operations;
     }
 
     /**
@@ -58,13 +46,13 @@ class Path extends AbstractModel implements Arrayable
      *
      * @return Operation
      */
-    public function getOperation($method)
+    public function getOperation(string $method): Operation
     {
-        if (!$this->operations->has($method)) {
-            $this->operations->set($method, new Operation());
+        if (!$this->hasOperation($method)) {
+            $this->setOperation($method, new Operation());
         }
 
-        return $this->operations->get($method);
+        return $this->operations[$method];
     }
 
     /**
@@ -73,9 +61,11 @@ class Path extends AbstractModel implements Arrayable
      * @param string    $method
      * @param Operation $operation
      */
-    public function setOperation($method, Operation $operation)
+    public function setOperation(string $method, Operation $operation)
     {
-        $this->operations->set($method, $operation);
+        $this->operations[$method] = $operation;
+
+        return $this;
     }
 
     /**
@@ -83,9 +73,9 @@ class Path extends AbstractModel implements Arrayable
      *
      * @return bool
      */
-    public function hasOperation($method)
+    public function hasOperation(string $method): bool
     {
-        return $this->operations->has($method);
+        return isset($this->operations[$method]);
     }
 
     /**
@@ -93,18 +83,20 @@ class Path extends AbstractModel implements Arrayable
      *
      * @param string $method
      */
-    public function removeOperation($method)
+    public function removeOperation(string $method)
     {
-        $this->operations->remove($method);
+        unset($this->operations[$method]);
+
+        return $this;
     }
 
     /**
      * Returns all methods for this path.
      *
-     * @return Set
+     * @return array
      */
-    public function getMethods()
+    public function getMethods(): array
     {
-        return $this->operations->keys();
+        return array_keys($this->operations);
     }
 }

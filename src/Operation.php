@@ -1,20 +1,27 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\ConsumesPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ExternalDocsPart;
-use gossi\swagger\parts\ParametersPart;
-use gossi\swagger\parts\ProducesPart;
-use gossi\swagger\parts\ResponsesPart;
-use gossi\swagger\parts\SchemesPart;
-use gossi\swagger\parts\TagsPart;
-use gossi\swagger\Util\MergeHelper;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Operation extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\ConsumesPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ExternalDocsPart;
+use EGetick\Swagger\Parts\ParametersPart;
+use EGetick\Swagger\Parts\ProducesPart;
+use EGetick\Swagger\Parts\ResponsesPart;
+use EGetick\Swagger\Parts\SchemesPart;
+use EGetick\Swagger\Parts\TagsPart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Operation extends AbstractModel
 {
     use ConsumesPart;
     use ProducesPart;
@@ -49,25 +56,31 @@ class Operation extends AbstractModel implements Arrayable
         MergeHelper::mergeFields($this->operationId, $data['operationId'] ?? null, $overwrite);
         MergeHelper::mergeFields($this->deprecated, $data['deprecated'] ?? null, $overwrite);
 
-        $this->mergeConsumes($data);
-        $this->mergeParameters($data);
-
-        $data = CollectionUtils::toMap($data);
-
-        // parts
-        $this->parseProduces($data);
-        $this->parseTags($data);
-        $this->parseResponses($data);
-        $this->parseSchemes($data);
-        $this->parseExternalDocs($data);
-        $this->parseExtensions($data);
+        $this->mergeConsumes($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeExternalDocs($data, $overwrite);
+        $this->mergeParameters($data, $overwrite);
+        $this->mergeProduces($data, $overwrite);
+        $this->mergeResponses($data, $overwrite);
+        $this->mergeSchemes($data, $overwrite);
+        $this->mergeTags($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('summary', 'description', 'operationId', 'deprecated',
-                'consumes', 'produces', 'parameters', 'responses', 'schemes', 'tags',
-                'externalDocs');
+        return [
+            'summary' => $this->getSummary(),
+            'description' => $this->getDescription(),
+            'operationId' => $this->getOperationId(),
+            'deprecated' => $this->getDeprecated(),
+            'consumes' => $this->getConsumes() ?: null,
+            'produces' => $this->getProduces() ?: null,
+            'parameters' => $this->getParameters(),
+            'responses' => $this->getResponses(),
+            'schemes' => $this->getSchemes() ?: null,
+            'tags' => $this->getTags() ?: null,
+            'externalDocs' => $this->getExternalDocs(),
+        ];
     }
 
     /**

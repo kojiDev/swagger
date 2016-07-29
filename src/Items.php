@@ -1,16 +1,25 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ItemsPart;
-use gossi\swagger\parts\RefPart;
-use gossi\swagger\parts\TypePart;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Items extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ItemsPart;
+use EGetick\Swagger\Parts\RefPart;
+use EGetick\Swagger\Parts\TypePart;
+
+final class Items extends AbstractModel
 {
+    const REQUIRED = false;
+
     use RefPart;
     use TypePart;
     use ItemsPart;
@@ -21,19 +30,22 @@ class Items extends AbstractModel implements Arrayable
         $this->merge($data);
     }
 
-    protected function parse($contents = [])
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
-
-        // parts
-        $this->parseRef($data);
-        $this->parseType($data);
-        $this->parseItems($data);
-        $this->parseExtensions($data);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeItems($data, $overwrite);
+        $this->mergeRef($data, $overwrite);
+        $this->mergeType($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export($this->getTypeExportFields(), 'items');
+        if ($this->hasRef()) {
+            return ['$ref' => $this->getRef()];
+        }
+
+        return array_merge([
+            'items' => $this->items,
+        ], $this->doExportType());
     }
 }

@@ -1,23 +1,27 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ExternalDocsPart;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-final class Tag extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ExternalDocsPart;
+
+final class Tag extends AbstractModel
 {
     use DescriptionPart;
     use ExternalDocsPart;
     use ExtensionPart;
 
-    /** @var string */
     private $name;
-
-    private $isObject = true;
 
     public function __construct($data)
     {
@@ -32,11 +36,9 @@ final class Tag extends AbstractModel implements Arrayable
 
     protected function doMerge($data, $overwrite = false)
     {
-        $map = CollectionUtils::toMap($data);
-        // parts
-        $this->parseDescription($map);
-        $this->parseExternalDocs($map);
-        $this->parseExtensions($map);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeExternalDocs($data, $overwrite);
     }
 
     public function toArray()
@@ -52,9 +54,9 @@ final class Tag extends AbstractModel implements Arrayable
     protected function doExport(): array
     {
         return [
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'externalDocs' => $this->getExternalDocs(),
+            'name' => $this->name,
+            'description' => $this->description,
+            'externalDocs' => $this->externalDocs,
         ];
     }
 

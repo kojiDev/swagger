@@ -1,54 +1,46 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\ItemsPart;
-use gossi\swagger\parts\TypePart;
-use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Header extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\ItemsPart;
+use EGetick\Swagger\Parts\TypePart;
+
+final class Header extends AbstractModel
 {
     use DescriptionPart;
     use TypePart;
     use ItemsPart;
     use ExtensionPart;
 
-    /** @var string */
-    private $header;
-
-    public function __construct($header, $data = [])
+    public function __construct($data = [])
     {
-        $this->header = $header;
         $this->merge($data);
     }
 
-    protected function parse($contents = [])
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
-
-        // parts
-        $this->parseDescription($data);
-        $this->parseType($data);
-        $this->parseItems($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeItems($data, $overwrite);
+        $this->mergeType($data, $overwrite);
     }
 
-    public function toArray()
+    public function doExport()
     {
-        return $this->export('description', $this->getTypeExportFields(), 'items');
-    }
-
-    /**
-     * Returns the header.
-     *
-     * @return string
-     */
-    public function getHeader()
-    {
-        return $this->header;
+        return array_merge([
+            'description' => $this->description,
+            'items' => $this->items,
+        ], $this->doExportType());
     }
 }

@@ -1,19 +1,24 @@
 <?php
 
-namespace gossi\swagger\parts;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use phootwork\collection\Map;
+namespace EGetick\Swagger\Parts;
 
+/**
+ * @internal
+ */
 trait ExtensionPart
 {
     private $extensions = [];
 
-    private function parseExtensions(Map $data)
-    {
-        $this->mergeExtensions((array) $data);
-    }
-
-    private function mergeExtensions(array $data)
+    private function mergeExtensions(array $data, $overwrite)
     {
         foreach ($data as $name => $value) {
             if (0 === strpos($name, 'x-')) {

@@ -1,15 +1,24 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\UrlPart;
-use gossi\swagger\Util\MergeHelper;
-use phootwork\collection\CollectionUtils;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class License extends AbstractModel implements Arrayable
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\UrlPart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class License extends AbstractModel
 {
+    const REQUIRED = false;
+
     use UrlPart;
     use ExtensionPart;
 
@@ -25,15 +34,16 @@ class License extends AbstractModel implements Arrayable
     {
         MergeHelper::mergeFields($this->name, $data['name'] ?? null, $overwrite);
 
-        $data = CollectionUtils::toMap($data);
-        // extensions
-        $this->parseUrl($data);
-        $this->parseExtensions($data);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeUrl($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('name', 'url');
+        return [
+            'name' => $this->name,
+            'url' => $this->url,
+        ];
     }
 
     /**

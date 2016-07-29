@@ -1,18 +1,18 @@
 {
-  "swagger": "2.0",
+  "Swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "Swagger Petstore",
     "contact": {
       "name": "Swagger API Team",
-      "url": "http://swagger.io"
+      "url": "http://Swagger.io"
     },
     "license": {
       "name": "Creative Commons 4.0 International",
       "url": "http://creativecommons.org/licenses/by/4.0/"
     }
   },
-  "host": "petstore.swagger.io",
+  "host": "petstore.Swagger.io",
   "basePath": "/api",
   "schemes": [
     "http"

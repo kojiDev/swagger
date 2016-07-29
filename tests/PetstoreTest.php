@@ -1,11 +1,17 @@
 <?php
 
-namespace gossi\swagger\tests;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\Swagger;
-use phootwork\file\exception\FileNotFoundException;
-use phootwork\file\File;
-use phootwork\json\Json;
+namespace EGetick\Swagger\tests;
+
+use EGetick\Swagger\Swagger;
 
 class PetstoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,20 +46,18 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase
         $responses = $swagger->getPaths()->get('/pets')->getOperation('get')->getResponses();
         $headers = $responses->get('200')->getHeaders();
 
-        $this->assertEquals(1, $headers->size());
+        $this->assertEquals(1, count($headers->toArray()));
         $this->assertTrue($headers->has('x-expires'));
         $expires = $headers->get('x-expires');
-        $this->assertTrue($headers->contains($expires));
 
-        $this->assertEquals('x-expires', $expires->getHeader());
         $this->assertEquals('string', $expires->getType());
 
         $headers->remove('x-expires');
-        $this->assertEquals(0, $headers->size());
+        $this->assertEquals(0, count($headers->toArray()));
         $this->assertFalse($headers->has('x-expires'));
 
-        $headers->add($expires);
-        $this->assertEquals(1, $headers->size());
+        $headers->set('x-expires', $expires);
+        $this->assertEquals(1, count($headers->toArray()));
         $this->assertTrue($headers->has('x-expires'));
     }
 
@@ -74,13 +78,13 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase
 
         $external = $swagger->getExternalDocs();
         $this->assertEquals('find more info here', $external->getDescription());
-        $this->assertEquals('https://swagger.io/about', $external->getUrl());
+        $this->assertEquals('https://Swagger.io/about', $external->getUrl());
 
         $info = $swagger->getInfo();
         $this->assertEquals('1.0.0', $info->getVersion());
         $this->assertEquals('Swagger Petstore', $info->getTitle());
-        $this->assertEquals('A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification', $info->getDescription());
-        $this->assertEquals('http://swagger.io/terms/', $info->getTerms());
+        $this->assertEquals('A sample API that uses a petstore as an example to demonstrate features in the Swagger-2.0 specification', $info->getDescription());
+        $this->assertEquals('http://Swagger.io/terms/', $info->getTerms());
 
         $this->assertEquals('1.0.1', $info->setVersion('1.0.1')->getVersion());
         $this->assertEquals('Pets', $info->setTitle('Pets')->getTitle());
@@ -89,12 +93,12 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase
 
         $contact = $info->getContact();
         $this->assertEquals('Swagger API Team', $contact->getName());
-        $this->assertEquals('apiteam@swagger.io', $contact->getEmail());
-        $this->assertEquals('http://swagger.io', $contact->getUrl());
+        $this->assertEquals('apiteam@Swagger.io', $contact->getEmail());
+        $this->assertEquals('http://Swagger.io', $contact->getUrl());
 
         $this->assertEquals('Swaggers', $contact->setName('Swaggers')->getName());
-        $this->assertEquals('team@swagger.io', $contact->setEmail('team@swagger.io')->getEmail());
-        $this->assertEquals('https://swagger.io', $contact->setUrl('https://swagger.io')->getUrl());
+        $this->assertEquals('team@Swagger.io', $contact->setEmail('team@Swagger.io')->getEmail());
+        $this->assertEquals('https://Swagger.io', $contact->setUrl('https://Swagger.io')->getUrl());
 
         $license = $info->getLicense();
         $this->assertEquals('MIT', $license->getName());

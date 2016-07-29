@@ -1,81 +1,80 @@
 <?php
 
-namespace gossi\swagger;
+/*
+ * This file is part of the Swagger package.
+ *
+ * (c) EXSyst
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-use gossi\swagger\collections\Headers;
-use gossi\swagger\parts\DescriptionPart;
-use gossi\swagger\parts\ExtensionPart;
-use gossi\swagger\parts\RefPart;
-use gossi\swagger\parts\SchemaPart;
-use phootwork\collection\CollectionUtils;
-use phootwork\collection\Map;
-use phootwork\lang\Arrayable;
+namespace EGetick\Swagger;
 
-class Response extends AbstractModel implements Arrayable
+use EGetick\Swagger\Collections\Headers;
+use EGetick\Swagger\Parts\DescriptionPart;
+use EGetick\Swagger\Parts\ExtensionPart;
+use EGetick\Swagger\Parts\RefPart;
+use EGetick\Swagger\Parts\SchemaPart;
+use EGetick\Swagger\Util\MergeHelper;
+
+final class Response extends AbstractModel
 {
     use RefPart;
     use DescriptionPart;
     use SchemaPart;
     use ExtensionPart;
 
-    /** @var string */
-    private $code;
-
-    /** @var Map */
-    private $examples;
+    private $examples = [];
 
     /** @var Headers */
     private $headers;
 
-    public function __construct($code, $data = [])
+    public function __construct($data = [])
     {
-        $this->code = $code;
+        $this->headers = new Headers();
+
         $this->merge($data);
     }
 
-    protected function parse($contents)
+    protected function doMerge($data, $overwrite = false)
     {
-        $data = CollectionUtils::toMap($contents);
+        foreach ($data['examples'] ?? [] as $mimeType => $example) {
+            $this->examples[$mimeType] = $this->examples[$mimeType] ?? null;
+            MergeHelper::mergeFields($this->examples[$mimeType], $example, $overwrite);
+        }
 
-        $this->examples = $data->get('examples', new Map());
-        $this->headers = new Headers($data->get('headers', []));
+        $this->headers->merge($data['headers'] ?? [], $overwrite);
 
-        // parts
-        $this->parseRef($data);
-        $this->parseDescription($data);
-        $this->parseSchema($data);
-        $this->parseExtensions($data);
+        $this->mergeDescription($data, $overwrite);
+        $this->mergeExtensions($data, $overwrite);
+        $this->mergeRef($data, $overwrite);
+        $this->mergeSchema($data, $overwrite);
     }
 
-    public function toArray()
+    protected function doExport()
     {
-        return $this->export('description', 'schema', 'headers', 'examples');
+        if ($this->hasRef()) {
+            return ['$ref' => $this->getRef()];
+        }
+
+        return [
+            'description' => $this->description,
+            'schema' => $this->schema,
+            'headers' => $this->headers,
+            'examples' => $this->examples ?: null,
+        ];
     }
 
-    /**
-     * Returns the responses code.
-     *
-     * @return string
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * @return Map
-     */
-    public function getExamples()
+    public function getExamples(): array
     {
         return $this->examples;
     }
 
     /**
      * Returns headers for this response.
-     *
-     * @return Headers
      */
-    public function getHeaders()
+    public function getHeaders(): Headers
     {
         return $this->headers;
     }
