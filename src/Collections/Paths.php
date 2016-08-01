@@ -87,6 +87,6 @@ final class Paths extends AbstractModel implements \IteratorAggregate
     }
 
     public function getIterator() {
-        return new ArrayIterator($this->paths);
+        return new \ArrayIterator($this->paths);
     }
 }

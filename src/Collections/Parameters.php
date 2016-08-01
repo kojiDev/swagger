@@ -93,6 +93,6 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
     }
 
     public function getIterator() {
-        return new ArrayIterator(array_values($this->parameters));
+        return new \ArrayIterator(array_values($this->parameters));
     }
 }

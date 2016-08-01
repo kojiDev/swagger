@@ -39,12 +39,13 @@ final class Path extends AbstractModel
         return $this->operations;
     }
 
+    public function getOperations(): array
+    {
+        return $this->operations;
+    }
+
     /**
      * Gets the operation for the given method, creates one if none exists.
-     *
-     * @param string $method
-     *
-     * @return Operation
      */
     public function getOperation(string $method): Operation
     {
@@ -57,9 +58,6 @@ final class Path extends AbstractModel
 
     /**
      * Sets the operation for a method.
-     *
-     * @param string    $method
-     * @param Operation $operation
      */
     public function setOperation(string $method, Operation $operation)
     {
@@ -68,11 +66,6 @@ final class Path extends AbstractModel
         return $this;
     }
 
-    /**
-     * @param string $method
-     *
-     * @return bool
-     */
     public function hasOperation(string $method): bool
     {
         return isset($this->operations[$method]);
@@ -80,8 +73,6 @@ final class Path extends AbstractModel
 
     /**
      * Removes an operation for the given method.
-     *
-     * @param string $method
      */
     public function removeOperation(string $method)
     {
@@ -92,8 +83,6 @@ final class Path extends AbstractModel
 
     /**
      * Returns all methods for this path.
-     *
-     * @return array
      */
     public function getMethods(): array
     {

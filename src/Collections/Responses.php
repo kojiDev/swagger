@@ -96,6 +96,6 @@ final class Responses extends AbstractModel implements \IteratorAggregate
     }
 
     public function getIterator() {
-        return new ArrayIterator($this->responses);
+        return new \ArrayIterator($this->responses);
     }
 }

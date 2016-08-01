@@ -90,6 +90,6 @@ final class Headers extends AbstractModel implements \IteratorAggregate
     }
 
     public function getIterator() {
-        return new ArrayIterator($this->headers);
+        return new \ArrayIterator($this->headers);
     }
 }

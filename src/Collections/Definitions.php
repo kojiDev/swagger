@@ -78,6 +78,6 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
     }
 
     public function getIterator() {
-        return new ArrayIterator($this->definitions);
+        return new \ArrayIterator($this->definitions);
     }
 }
