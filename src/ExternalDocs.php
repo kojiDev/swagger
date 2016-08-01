@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger;
+namespace EXSyst\Component\Swagger;
 
-use EXSyst\Swagger\Parts\DescriptionPart;
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Parts\UrlPart;
+use EXSyst\Component\Swagger\Parts\DescriptionPart;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Parts\UrlPart;
 
 final class ExternalDocs extends AbstractModel
 {

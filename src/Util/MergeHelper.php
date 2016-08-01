@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Util;
+namespace EXSyst\Component\Swagger\Util;
 
 /**
  * @internal

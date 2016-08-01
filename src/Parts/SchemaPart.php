@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Parts;
+namespace EXSyst\Component\Swagger\Parts;
 
-use EXSyst\Swagger\Schema;
+use EXSyst\Component\Swagger\Schema;
 
 /**
  * @internal

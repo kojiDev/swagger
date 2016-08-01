@@ -11,12 +11,12 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"EXSyst\\Swagger\\" : "src/"
+			"EXSyst\\Component\\Swagger\\" : "src/"
 		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"EXSyst\\Swagger\\tests\\" : "tests/"
+			"EXSyst\\Component\\Swagger\\tests\\" : "tests/"
 		}
 	},
 	"require" : {

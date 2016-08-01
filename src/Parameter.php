@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger;
+namespace EXSyst\Component\Swagger;
 
-use EXSyst\Swagger\Parts\DescriptionPart;
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Parts\ItemsPart;
-use EXSyst\Swagger\Parts\RefPart;
-use EXSyst\Swagger\Parts\RequiredPart;
-use EXSyst\Swagger\Parts\SchemaPart;
-use EXSyst\Swagger\Parts\TypePart;
-use EXSyst\Swagger\Util\MergeHelper;
+use EXSyst\Component\Swagger\Parts\DescriptionPart;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Parts\ItemsPart;
+use EXSyst\Component\Swagger\Parts\RefPart;
+use EXSyst\Component\Swagger\Parts\RequiredPart;
+use EXSyst\Component\Swagger\Parts\SchemaPart;
+use EXSyst\Component\Swagger\Parts\TypePart;
+use EXSyst\Component\Swagger\Util\MergeHelper;
 
 final class Parameter extends AbstractModel
 {

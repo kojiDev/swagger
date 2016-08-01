@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger;
+namespace EXSyst\Component\Swagger;
 
-use EXSyst\Swagger\Parts\DescriptionPart;
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Parts\ItemsPart;
-use EXSyst\Swagger\Parts\TypePart;
+use EXSyst\Component\Swagger\Parts\DescriptionPart;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Parts\ItemsPart;
+use EXSyst\Component\Swagger\Parts\TypePart;
 
 final class Header extends AbstractModel
 {

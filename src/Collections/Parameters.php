@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Collections;
+namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Swagger\Parameter;
-use EXSyst\Swagger\Parts\RefPart;
-use EXSyst\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Parameter;
+use EXSyst\Component\Swagger\Parts\RefPart;
+use EXSyst\Component\Swagger\AbstractModel;
 
-final class Parameters extends AbstractModel
+final class Parameters extends AbstractModel implements \IteratorAggregate
 {
     const REQUIRED = false;
 
@@ -90,5 +90,9 @@ final class Parameters extends AbstractModel
     private function getIdentifier(Parameter $parameter)
     {
         return $parameter->getName().'/'.$parameter->getIn();
+    }
+
+    public function getIterator() {
+        return new ArrayIterator(array_values($this->parameters));
     }
 }

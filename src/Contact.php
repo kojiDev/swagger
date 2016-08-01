@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger;
+namespace EXSyst\Component\Swagger;
 
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Util\MergeHelper;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Util\MergeHelper;
 
 final class Contact extends AbstractModel
 {

@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger;
+namespace EXSyst\Component\Swagger;
 
-use EXSyst\Swagger\Collections\Definitions;
-use EXSyst\Swagger\Collections\Paths;
-use EXSyst\Swagger\Parts\ConsumesPart;
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Parts\ExternalDocsPart;
-use EXSyst\Swagger\Parts\ParametersPart;
-use EXSyst\Swagger\Parts\ProducesPart;
-use EXSyst\Swagger\Parts\ResponsesPart;
-use EXSyst\Swagger\Parts\SchemesPart;
-use EXSyst\Swagger\Parts\TagsPart;
-use EXSyst\Swagger\Util\MergeHelper;
+use EXSyst\Component\Swagger\Collections\Definitions;
+use EXSyst\Component\Swagger\Collections\Paths;
+use EXSyst\Component\Swagger\Parts\ConsumesPart;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Parts\ExternalDocsPart;
+use EXSyst\Component\Swagger\Parts\ParametersPart;
+use EXSyst\Component\Swagger\Parts\ProducesPart;
+use EXSyst\Component\Swagger\Parts\ResponsesPart;
+use EXSyst\Component\Swagger\Parts\SchemesPart;
+use EXSyst\Component\Swagger\Parts\TagsPart;
+use EXSyst\Component\Swagger\Util\MergeHelper;
 
 final class Swagger extends AbstractModel
 {

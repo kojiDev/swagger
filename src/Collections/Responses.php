@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Collections;
+namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Response;
-use EXSyst\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Response;
+use EXSyst\Component\Swagger\AbstractModel;
 
-final class Responses extends AbstractModel
+final class Responses extends AbstractModel implements \IteratorAggregate
 {
     use ExtensionPart;
 
@@ -93,5 +93,9 @@ final class Responses extends AbstractModel
         unset($this->responses[$code]);
 
         return $this;
+    }
+
+    public function getIterator() {
+        return new ArrayIterator($this->responses);
     }
 }

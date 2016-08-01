@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Collections;
+namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Swagger\Parts\ExtensionPart;
-use EXSyst\Swagger\Path;
-use EXSyst\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Path;
+use EXSyst\Component\Swagger\AbstractModel;
 
-final class Paths extends AbstractModel
+final class Paths extends AbstractModel implements \IteratorAggregate
 {
     const REQUIRED = false;
 
@@ -84,5 +84,9 @@ final class Paths extends AbstractModel
         unset($this->paths[$path]);
 
         return $this;
+    }
+
+    public function getIterator() {
+        return new ArrayIterator($this->paths);
     }
 }

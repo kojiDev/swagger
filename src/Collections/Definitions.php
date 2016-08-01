@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Collections;
+namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Swagger\Schema;
-use EXSyst\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Schema;
+use EXSyst\Component\Swagger\AbstractModel;
 
-final class Definitions extends AbstractModel
+final class Definitions extends AbstractModel implements \IteratorAggregate
 {
     const REQUIRED = false;
 
@@ -75,5 +75,9 @@ final class Definitions extends AbstractModel
     public function has(string $name): bool
     {
         return isset($this->definitions[$name]);
+    }
+
+    public function getIterator() {
+        return new ArrayIterator($this->definitions);
     }
 }

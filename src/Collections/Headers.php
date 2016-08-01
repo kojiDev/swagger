@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\Collections;
+namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Swagger\Header;
-use EXSyst\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Header;
+use EXSyst\Component\Swagger\AbstractModel;
 
-final class Headers extends AbstractModel
+final class Headers extends AbstractModel implements \IteratorAggregate
 {
     const REQUIRED = false;
 
@@ -87,5 +87,9 @@ final class Headers extends AbstractModel
         unset($this->headers[$header]);
 
         return $this;
+    }
+
+    public function getIterator() {
+        return new ArrayIterator($this->headers);
     }
 }

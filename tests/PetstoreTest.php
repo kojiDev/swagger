@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\tests;
+namespace EXSyst\Component\Swagger\tests;
 
-use EXSyst\Swagger\Swagger;
+use EXSyst\Component\Swagger\Swagger;
 
 class PetstoreTest extends \PHPUnit_Framework_TestCase
 {

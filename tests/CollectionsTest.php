@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Swagger\tests;
+namespace EXSyst\Component\Swagger\tests;
 
-use EXSyst\Swagger\Collections\Definitions;
-use EXSyst\Swagger\Collections\Parameters;
-use EXSyst\Swagger\Collections\Paths;
-use EXSyst\Swagger\Collections\Responses;
-use EXSyst\Swagger\Operation;
-use EXSyst\Swagger\Parameter;
-use EXSyst\Swagger\Path;
-use EXSyst\Swagger\Response;
-use EXSyst\Swagger\Schema;
-use EXSyst\Swagger\Swagger;
+use EXSyst\Component\Swagger\Collections\Definitions;
+use EXSyst\Component\Swagger\Collections\Parameters;
+use EXSyst\Component\Swagger\Collections\Paths;
+use EXSyst\Component\Swagger\Collections\Responses;
+use EXSyst\Component\Swagger\Operation;
+use EXSyst\Component\Swagger\Parameter;
+use EXSyst\Component\Swagger\Path;
+use EXSyst\Component\Swagger\Response;
+use EXSyst\Component\Swagger\Schema;
+use EXSyst\Component\Swagger\Swagger;
 
 class CollectionsTest extends \PHPUnit_Framework_TestCase
 {
