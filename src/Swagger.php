@@ -105,7 +105,7 @@ final class Swagger extends AbstractModel
     protected function doExport()
     {
         return [
-            'Swagger' => '2.0',
+            'swagger' => '2.0',
             'info' => $this->info,
             'host' => $this->host,
             'basePath' => $this->basePath,
@@ -116,7 +116,7 @@ final class Swagger extends AbstractModel
             'definitions' => $this->definitions,
             'parameters' => $this->parameters ?: null,
             'responses' => $this->responses,
-            'tags' => $this->tags ?: null,
+            'tags' => $this->getTags() ?: null,
             'externalDocs' => $this->externalDocs,
         ];
     }
