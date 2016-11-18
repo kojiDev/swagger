@@ -55,7 +55,7 @@ abstract class AbstractModel
 
     protected function normalize($data)
     {
-        if ($data instanceof \stdClass) {
+        if ($data instanceof \stdClass || $data instanceof \ArrayAccess) {
             return (array) $data;
         }
 
