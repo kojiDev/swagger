@@ -41,6 +41,7 @@ final class Parameter extends AbstractModel
 
     public function __construct($data = [])
     {
+        $data = $this->normalize($data);
         if (!isset($data['name']) || !isset($data['in'])) {
             throw new \InvalidArgumentException('"in" and "name" are required for parameters');
         }
