@@ -11,9 +11,9 @@
 
 namespace EXSyst\Component\Swagger\Collections;
 
+use EXSyst\Component\Swagger\AbstractModel;
 use EXSyst\Component\Swagger\Parameter;
 use EXSyst\Component\Swagger\Parts\RefPart;
-use EXSyst\Component\Swagger\AbstractModel;
 
 final class Parameters extends AbstractModel implements \IteratorAggregate
 {
@@ -92,7 +92,8 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
         return $parameter->getName().'/'.$parameter->getIn();
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator(array_values($this->parameters));
     }
 }

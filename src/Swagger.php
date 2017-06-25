@@ -20,6 +20,7 @@ use EXSyst\Component\Swagger\Parts\ParametersPart;
 use EXSyst\Component\Swagger\Parts\ProducesPart;
 use EXSyst\Component\Swagger\Parts\ResponsesPart;
 use EXSyst\Component\Swagger\Parts\SchemesPart;
+use EXSyst\Component\Swagger\Parts\SecurityPart;
 use EXSyst\Component\Swagger\Parts\TagsPart;
 use EXSyst\Component\Swagger\Util\MergeHelper;
 
@@ -33,6 +34,7 @@ final class Swagger extends AbstractModel
     use ResponsesPart;
     use ExternalDocsPart;
     use ExtensionPart;
+    use SecurityPart;
 
     public static $METHODS = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
 
@@ -95,10 +97,11 @@ final class Swagger extends AbstractModel
         $this->mergeProduces($data, $overwrite);
         $this->mergeResponses($data, $overwrite);
         $this->mergeSchemes($data, $overwrite);
+        $this->mergeSecurity($data, $overwrite);
         $this->mergeTags($data, $overwrite);
 
-        foreach ($this->securityDefinitions as $s => $def) {
-            $this->securityDefinitions[$s] = new SecurityScheme($s, $def);
+        foreach ($data['securityDefinitions'] ?? [] as $name => $def) {
+            $this->securityDefinitions[$name] = new SecurityScheme($def);
         }
     }
 
@@ -118,6 +121,8 @@ final class Swagger extends AbstractModel
             'responses' => $this->responses,
             'tags' => $this->getTags() ?: null,
             'externalDocs' => $this->externalDocs,
+            'securityDefinitions' => $this->securityDefinitions ?: null,
+            'security' => $this->getSecurity(),
         ];
     }
 

@@ -31,7 +31,7 @@ class SwaggerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://example.com', $swagger->getHost());
 
         $this->assertEquals([
-            'Swagger' => '2.0',
+            'swagger' => '2.0',
             'host' => 'http://example.com',
             'basePath' => '/api',
         ], $swagger->toArray());

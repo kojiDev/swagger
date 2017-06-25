@@ -18,6 +18,7 @@ use EXSyst\Component\Swagger\Parts\ParametersPart;
 use EXSyst\Component\Swagger\Parts\ProducesPart;
 use EXSyst\Component\Swagger\Parts\ResponsesPart;
 use EXSyst\Component\Swagger\Parts\SchemesPart;
+use EXSyst\Component\Swagger\Parts\SecurityPart;
 use EXSyst\Component\Swagger\Parts\TagsPart;
 use EXSyst\Component\Swagger\Util\MergeHelper;
 
@@ -31,6 +32,7 @@ final class Operation extends AbstractModel
     use SchemesPart;
     use ExternalDocsPart;
     use ExtensionPart;
+    use SecurityPart;
 
     /** @var string */
     private $summary;
@@ -63,6 +65,7 @@ final class Operation extends AbstractModel
         $this->mergeProduces($data, $overwrite);
         $this->mergeResponses($data, $overwrite);
         $this->mergeSchemes($data, $overwrite);
+        $this->mergeSecurity($data, $overwrite);
         $this->mergeTags($data, $overwrite);
     }
 
@@ -80,6 +83,7 @@ final class Operation extends AbstractModel
             'schemes' => $this->getSchemes() ?: null,
             'tags' => $this->getTags() ?: null,
             'externalDocs' => $this->getExternalDocs(),
+            'security' => $this->getSecurity(),
         ];
     }
 
