@@ -11,8 +11,8 @@
 
 namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Component\Swagger\Header;
 use EXSyst\Component\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Header;
 
 final class Headers extends AbstractModel implements \IteratorAggregate
 {
@@ -89,7 +89,8 @@ final class Headers extends AbstractModel implements \IteratorAggregate
         return $this;
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->headers);
     }
 }

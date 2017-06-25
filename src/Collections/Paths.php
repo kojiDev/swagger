@@ -11,9 +11,9 @@
 
 namespace EXSyst\Component\Swagger\Collections;
 
+use EXSyst\Component\Swagger\AbstractModel;
 use EXSyst\Component\Swagger\Parts\ExtensionPart;
 use EXSyst\Component\Swagger\Path;
-use EXSyst\Component\Swagger\AbstractModel;
 
 final class Paths extends AbstractModel implements \IteratorAggregate
 {
@@ -86,7 +86,8 @@ final class Paths extends AbstractModel implements \IteratorAggregate
         return $this;
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->paths);
     }
 }

@@ -12,10 +12,12 @@
 namespace EXSyst\Component\Swagger;
 
 use EXSyst\Component\Swagger\Parts\ExtensionPart;
+use EXSyst\Component\Swagger\Parts\ParametersPart;
 
 final class Path extends AbstractModel
 {
     use ExtensionPart;
+    use ParametersPart;
 
     private $operations = [];
 
@@ -32,11 +34,12 @@ final class Path extends AbstractModel
             }
         }
         $this->mergeExtensions($data, $overwrite);
+        $this->mergeParameters($data, $overwrite);
     }
 
     protected function doExport()
     {
-        return $this->operations;
+        return array_merge($this->operations, array('parameters' => $this->getParameters()));
     }
 
     public function getOperations(): array

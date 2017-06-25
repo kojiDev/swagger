@@ -11,9 +11,9 @@
 
 namespace EXSyst\Component\Swagger\Collections;
 
+use EXSyst\Component\Swagger\AbstractModel;
 use EXSyst\Component\Swagger\Parts\ExtensionPart;
 use EXSyst\Component\Swagger\Response;
-use EXSyst\Component\Swagger\AbstractModel;
 
 final class Responses extends AbstractModel implements \IteratorAggregate
 {
@@ -95,7 +95,8 @@ final class Responses extends AbstractModel implements \IteratorAggregate
         return $this;
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->responses);
     }
 }

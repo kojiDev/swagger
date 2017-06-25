@@ -11,8 +11,8 @@
 
 namespace EXSyst\Component\Swagger\Collections;
 
-use EXSyst\Component\Swagger\Schema;
 use EXSyst\Component\Swagger\AbstractModel;
+use EXSyst\Component\Swagger\Schema;
 
 final class Definitions extends AbstractModel implements \IteratorAggregate
 {
@@ -77,7 +77,8 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
         return isset($this->definitions[$name]);
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         return new \ArrayIterator($this->definitions);
     }
 }
