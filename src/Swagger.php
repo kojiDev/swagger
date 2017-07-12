@@ -16,7 +16,6 @@ use EXSyst\Component\Swagger\Collections\Paths;
 use EXSyst\Component\Swagger\Parts\ConsumesPart;
 use EXSyst\Component\Swagger\Parts\ExtensionPart;
 use EXSyst\Component\Swagger\Parts\ExternalDocsPart;
-use EXSyst\Component\Swagger\Parts\ParametersPart;
 use EXSyst\Component\Swagger\Parts\ProducesPart;
 use EXSyst\Component\Swagger\Parts\ResponsesPart;
 use EXSyst\Component\Swagger\Parts\SchemesPart;
@@ -30,7 +29,6 @@ final class Swagger extends AbstractModel
     use ConsumesPart;
     use ProducesPart;
     use TagsPart;
-    use ParametersPart;
     use ResponsesPart;
     use ExternalDocsPart;
     use ExtensionPart;
@@ -52,6 +50,9 @@ final class Swagger extends AbstractModel
 
     /** @var Definitions */
     private $definitions;
+
+    /** @var array */
+    private $parameters;
 
     /** @var array */
     private $securityDefinitions = [];
@@ -93,12 +94,15 @@ final class Swagger extends AbstractModel
         $this->mergeConsumes($data, $overwrite);
         $this->mergeExtensions($data, $overwrite);
         $this->mergeExternalDocs($data, $overwrite);
-        $this->mergeParameters($data, $overwrite);
         $this->mergeProduces($data, $overwrite);
         $this->mergeResponses($data, $overwrite);
         $this->mergeSchemes($data, $overwrite);
         $this->mergeSecurity($data, $overwrite);
         $this->mergeTags($data, $overwrite);
+
+        foreach ($data['parameters'] ?? [] as $name => $def) {
+            $this->parameters[$name] = new Parameter($def);
+        }
 
         foreach ($data['securityDefinitions'] ?? [] as $name => $def) {
             $this->securityDefinitions[$name] = new SecurityScheme($def);
@@ -204,5 +208,13 @@ final class Swagger extends AbstractModel
     public function getSecurityDefinitions()
     {
         return $this->securityDefinitions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 }
