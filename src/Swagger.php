@@ -217,4 +217,16 @@ final class Swagger extends AbstractModel
     {
         return $this->parameters;
     }
+
+    /**
+     * @param array $parameters
+     *
+     * @return $this
+     */
+    public function setParameters(array $parameters)
+    {
+        $this->parameters = $parameters;
+
+        return $this;
+    }
 }
