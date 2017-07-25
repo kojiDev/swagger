@@ -42,14 +42,16 @@ final class Parameter extends AbstractModel
     public function __construct($data = [])
     {
         $data = $this->normalize($data);
-        if (!isset($data['name']) || !isset($data['in'])) {
-            throw new \InvalidArgumentException('"in" and "name" are required for parameters');
-        }
-
-        $this->name = $data['name'];
-        $this->in = $data['in'];
-
         $this->merge($data);
+
+        if (!$this->hasRef()) {
+            if (!isset($data['name']) || !isset($data['in'])) {
+                throw new \InvalidArgumentException('"in" and "name" are required for parameters');
+            }
+
+            $this->name = $data['name'];
+            $this->in = $data['in'];
+        }
     }
 
     protected function doMerge($data, $overwrite = false)

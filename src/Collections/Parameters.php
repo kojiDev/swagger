@@ -50,12 +50,13 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
     /**
      * Searches whether a parameter with the given unique combination exists.
      */
-    public function has(string $name, string $in): bool
+    public function has(string $name, string $in = null): bool
     {
-        return isset($this->parameters[$name.'/'.$in]);
+        $id = $in ? $name.'/'.$in : $name;
+        return isset($this->parameters[$id]);
     }
 
-    public function get(string $name, string $in): Parameter
+    public function get(string $name, string $in = null): Parameter
     {
         if (!$this->has($name, $in)) {
             $this->add($parameter = new Parameter([
@@ -64,7 +65,8 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
             ]));
         }
 
-        return $this->parameters[$name.'/'.$in];
+        $id = $in ? $name.'/'.$in : $name;
+        return $this->parameters[$id];
     }
 
     /**
@@ -89,6 +91,10 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
 
     private function getIdentifier(Parameter $parameter)
     {
+        if ($parameter->hasRef()) {
+            return $parameter->getRef();
+        }
+
         return $parameter->getName().'/'.$parameter->getIn();
     }
 

@@ -36,6 +36,14 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->fileToArray($filename), $swagger->toArray());
     }
 
+    public function testParameterRefs()
+    {
+        $filename = __DIR__.'/fixtures/petstore-parameter-refs.json';
+        $swagger = Swagger::fromFile($filename);
+
+        $this->assertEquals($this->fileToArray($filename), $swagger->toArray());
+    }
+
     public function testPetstore()
     {
         $filename = __DIR__.'/fixtures/petstore.json';
