@@ -55,7 +55,7 @@ final class Schema extends AbstractModel
     /** @var Schema */
     private $additionalProperties;
 
-    public function __construct(array $data = [])
+    public function __construct($data = [])
     {
         $this->properties = new Definitions();
         $this->merge($data);
