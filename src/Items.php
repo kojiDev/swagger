@@ -11,6 +11,7 @@
 
 namespace EXSyst\Component\Swagger;
 
+use EXSyst\Component\Swagger\Parts\DescriptionPart;
 use EXSyst\Component\Swagger\Parts\ExtensionPart;
 use EXSyst\Component\Swagger\Parts\ItemsPart;
 use EXSyst\Component\Swagger\Parts\RefPart;
@@ -24,6 +25,7 @@ final class Items extends AbstractModel
     use TypePart;
     use ItemsPart;
     use ExtensionPart;
+    use DescriptionPart;
 
     public function __construct($data = [])
     {
