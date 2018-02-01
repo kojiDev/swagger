@@ -30,7 +30,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $definitions = $swagger->getDefinitions();
 
         $this->assertTrue($definitions instanceof Definitions);
-        $this->assertEquals(0, count($definitions->toArray()));
+        $this->assertNull($definitions->toArray());
         $this->assertFalse($definitions->has('User'));
 
         $user = new Schema();
@@ -43,7 +43,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($definitions->toArray()['User']));
 
         $definitions->remove('User');
-        $this->assertEquals(0, count($definitions->toArray()));
+        $this->assertNull($definitions->toArray());
         $this->assertFalse($definitions->has('User'));
     }
 
@@ -53,7 +53,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $paths = $swagger->getPaths();
 
         $this->assertTrue($paths instanceof Paths);
-        $this->assertEquals(0, count($paths->toArray()));
+        $this->assertNull($paths->toArray());
         $this->assertFalse($paths->has('/pets'));
 
         $pets = new Path();
@@ -67,7 +67,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($paths->toArray()['/pets']));
 
         $paths->remove('/pets');
-        $this->assertEquals(0, count($paths->toArray()));
+        $this->assertNull($paths->toArray());
         $this->assertFalse($paths->has('/pets'));
     }
 
@@ -77,7 +77,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $parameters = $path->getOperation('get')->getParameters();
 
         $this->assertTrue($parameters instanceof Parameters);
-        $this->assertEquals(0, count($parameters->toArray()));
+        $this->assertNull($parameters->toArray());
 
         $id = new Parameter([
             'name' => 'id',
@@ -109,7 +109,7 @@ class CollectionsTest extends \PHPUnit_Framework_TestCase
         $parameters->remove($id);
         $parameters->remove($id2);
         $parameters->remove($parameter);
-        $this->assertEquals(0, count($parameters->toArray()));
+        $this->assertNull($parameters->toArray());
 
         // test $ref
         $parameters->setRef('#/definitions/id');
