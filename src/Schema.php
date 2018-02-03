@@ -20,7 +20,7 @@ use EXSyst\Component\Swagger\Parts\RefPart;
 use EXSyst\Component\Swagger\Parts\TypePart;
 use EXSyst\Component\Swagger\Util\MergeHelper;
 
-final class Schema extends AbstractModel
+class Schema extends AbstractModel
 {
     use RefPart;
     use TypePart;

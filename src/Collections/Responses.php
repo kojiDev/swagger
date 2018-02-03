@@ -74,7 +74,8 @@ final class Responses extends AbstractModel implements \IteratorAggregate
     /**
      * Sets the response.
      *
-     * @param Response $code
+     * @param string $code
+     * @param Response $response
      */
     public function set($code, Response $response)
     {

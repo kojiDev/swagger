@@ -61,7 +61,7 @@ class PetstoreTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('string', $expires->getType());
 
         $headers->remove('x-expires');
-        $this->assertEquals(0, count($headers->toArray()));
+        $this->assertNull($headers->toArray());
         $this->assertFalse($headers->has('x-expires'));
 
         $headers->set('x-expires', $expires);
