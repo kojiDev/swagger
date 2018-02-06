@@ -1,6 +1,6 @@
 # Swagger
 
-[![Build Status](https://travis-ci.org/EXSyst/Swagger.svg?branch=master)](https://travis-ci.org/EXSyst/Swagger)
+[![Build Status](https://travis-ci.org/GuilhemN/swagger.svg?branch=master)](https://travis-ci.org/GuilhemN/swagger)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/EXSyst/Swagger/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/EXSyst/Swagger)
 [![Code Coverage](https://scrutinizer-ci.com/g/EXSyst/Swagger/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/EXSyst/Swagger)
 
