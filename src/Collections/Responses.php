@@ -30,7 +30,6 @@ final class Responses extends AbstractModel implements \IteratorAggregate
     {
         $this->mergeExtensions($data, $overwrite);
 
-        // responses
         foreach ($data as $code => $response) {
             if (0 !== strpos($code, 'x-')) {
                 $this->set($code, new Response($response));
@@ -38,31 +37,23 @@ final class Responses extends AbstractModel implements \IteratorAggregate
         }
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         return $this->responses;
     }
 
     /**
      * Returns whether the given response exists.
-     *
-     * @param string $code
-     *
-     * @return bool
      */
-    public function has($code)
+    public function has($code): bool
     {
         return isset($this->responses[$code]);
     }
 
     /**
-     * Returns the reponse info for the given code.
-     *
-     * @param string $code
-     *
-     * @return Response
+     * Returns the response info for the given code.
      */
-    public function get($code)
+    public function get($code): Response
     {
         if (!$this->has($code)) {
             $this->set($code, new Response());
@@ -73,11 +64,8 @@ final class Responses extends AbstractModel implements \IteratorAggregate
 
     /**
      * Sets the response.
-     *
-     * @param string $code
-     * @param Response $response
      */
-    public function set($code, Response $response)
+    public function set($code, Response $response): self
     {
         $this->responses[$code] = $response;
 
@@ -85,18 +73,16 @@ final class Responses extends AbstractModel implements \IteratorAggregate
     }
 
     /**
-     * Removes the given repsonse.
-     *
-     * @param string $code
+     * Removes the given response.
      */
-    public function remove($code)
+    public function remove($code): self
     {
         unset($this->responses[$code]);
 
         return $this;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->responses);
     }

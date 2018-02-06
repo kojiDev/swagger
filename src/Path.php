@@ -37,7 +37,7 @@ final class Path extends AbstractModel
         $this->mergeParameters($data, $overwrite);
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         return array_merge($this->operations, array('parameters' => $this->getParameters()));
     }
@@ -62,7 +62,7 @@ final class Path extends AbstractModel
     /**
      * Sets the operation for a method.
      */
-    public function setOperation(string $method, Operation $operation)
+    public function setOperation(string $method, Operation $operation): self
     {
         $this->operations[$method] = $operation;
 
@@ -77,7 +77,7 @@ final class Path extends AbstractModel
     /**
      * Removes an operation for the given method.
      */
-    public function removeOperation(string $method)
+    public function removeOperation(string $method): self
     {
         unset($this->operations[$method]);
 

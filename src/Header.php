@@ -36,11 +36,14 @@ final class Header extends AbstractModel
         $this->mergeType($data, $overwrite);
     }
 
-    public function doExport()
+    public function doExport(): array
     {
-        return array_merge([
-            'description' => $this->description,
-            'items' => $this->items,
-        ], $this->doExportType());
+        return array_merge(
+            [
+                'description' => $this->description,
+                'items' => $this->items,
+            ],
+            $this->doExportType()
+        );
     }
 }

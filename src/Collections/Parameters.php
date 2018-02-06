@@ -38,7 +38,7 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
         }
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         if ($this->hasRef()) {
             return ['$ref' => $this->getRef()];
@@ -53,26 +53,27 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
     public function has(string $name, string $in = null): bool
     {
         $id = $in ? $name.'/'.$in : $name;
+
         return isset($this->parameters[$id]);
     }
 
     public function get(string $name, string $in = null): Parameter
     {
         if (!$this->has($name, $in)) {
-            $this->add($parameter = new Parameter([
-                'name' => $name,
-                'in' => $in,
-            ]));
+            $this->add(
+                new Parameter(['name' => $name, 'in' => $in])
+            );
         }
 
         $id = $in ? $name.'/'.$in : $name;
+
         return $this->parameters[$id];
     }
 
     /**
      * Adds a parameter.
      */
-    public function add(Parameter $parameter)
+    public function add(Parameter $parameter): self
     {
         $this->parameters[$this->getIdentifier($parameter)] = $parameter;
 
@@ -82,7 +83,7 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
     /**
      * Removes a parameter.
      */
-    public function remove(Parameter $parameter)
+    public function remove(Parameter $parameter): self
     {
         unset($this->parameters[$this->getIdentifier($parameter)]);
 
@@ -98,7 +99,7 @@ final class Parameters extends AbstractModel implements \IteratorAggregate
         return $parameter->getName().'/'.$parameter->getIn();
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator(array_values($this->parameters));
     }

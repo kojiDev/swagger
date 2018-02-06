@@ -32,7 +32,7 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
         }
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         return $this->definitions;
     }
@@ -52,7 +52,7 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
     /**
      * Sets the field.
      */
-    public function set(string $name, Schema $schema)
+    public function set(string $name, Schema $schema): self
     {
         $this->definitions[$name] = $schema;
 
@@ -62,7 +62,7 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
     /**
      * Removes the given field.
      */
-    public function remove(string $name)
+    public function remove(string $name): self
     {
         unset($this->definitions[$name]);
 
@@ -77,7 +77,7 @@ final class Definitions extends AbstractModel implements \IteratorAggregate
         return isset($this->definitions[$name]);
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->definitions);
     }

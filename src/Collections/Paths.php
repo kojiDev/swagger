@@ -39,7 +39,7 @@ final class Paths extends AbstractModel implements \IteratorAggregate
         $this->mergeExtensions($data, $overwrite);
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         return $this->paths;
     }
@@ -66,10 +66,8 @@ final class Paths extends AbstractModel implements \IteratorAggregate
 
     /**
      * Sets the path.
-     *
-     * @return $this
      */
-    public function set(string $path, Path $model)
+    public function set(string $path, Path $model): self
     {
         $this->paths[$path] = $model;
 
@@ -79,14 +77,14 @@ final class Paths extends AbstractModel implements \IteratorAggregate
     /**
      * Removes the given path.
      */
-    public function remove(string $path)
+    public function remove(string $path): self
     {
         unset($this->paths[$path]);
 
         return $this;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->paths);
     }

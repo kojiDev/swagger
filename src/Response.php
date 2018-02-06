@@ -52,7 +52,7 @@ final class Response extends AbstractModel
         $this->mergeSchema($data, $overwrite);
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         if ($this->hasRef()) {
             return ['$ref' => $this->getRef()];

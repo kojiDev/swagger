@@ -32,31 +32,23 @@ final class Headers extends AbstractModel implements \IteratorAggregate
         }
     }
 
-    protected function doExport()
+    protected function doExport(): array
     {
         return $this->headers;
     }
 
     /**
      * Returns whether a header with the given name exists.
-     *
-     * @param string $header
-     *
-     * @return bool
      */
-    public function has($header)
+    public function has(string $header): bool
     {
         return isset($this->headers[$header]);
     }
 
     /**
      * Returns the header info for the given code.
-     *
-     * @param string $header
-     *
-     * @return Header
      */
-    public function get($header)
+    public function get($header): Header
     {
         if (!$this->has($header)) {
             $this->set($header, new Header());
@@ -67,10 +59,8 @@ final class Headers extends AbstractModel implements \IteratorAggregate
 
     /**
      * Sets the header.
-     *
-     * @param Header $header
      */
-    public function set($name, Header $header)
+    public function set(string $name, Header $header): self
     {
         $this->headers[$name] = $header;
 
@@ -79,17 +69,15 @@ final class Headers extends AbstractModel implements \IteratorAggregate
 
     /**
      * Removes the given header.
-     *
-     * @param string $header
      */
-    public function remove($header)
+    public function remove(string $header): self
     {
         unset($this->headers[$header]);
 
         return $this;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->headers);
     }
