@@ -28,9 +28,6 @@ trait ExternalDocsPart
         }
     }
 
-    /**
-     * @return ExternalDocs
-     */
     public function getExternalDocs(): ExternalDocs
     {
         if (null === $this->externalDocs) {

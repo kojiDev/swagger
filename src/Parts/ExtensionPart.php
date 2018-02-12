@@ -29,8 +29,6 @@ trait ExtensionPart
 
     /**
      * Returns extensions.
-     *
-     * @return array
      */
     public function getExtensions(): array
     {

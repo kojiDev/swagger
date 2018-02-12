@@ -34,10 +34,7 @@ trait RequiredPart
         return $this->required;
     }
 
-    /**
-     * @param bool|null $required
-     */
-    public function setRequired(bool $required = null): self
+    public function setRequired(?bool $required): self
     {
         $this->required = $required;
 

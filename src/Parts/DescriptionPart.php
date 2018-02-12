@@ -26,19 +26,11 @@ trait DescriptionPart
         MergeHelper::mergeFields($this->description, $data['description'] ?? null, $overwrite);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     *
-     * @return $this
-     */
     public function setDescription(string $description = null): self
     {
         $this->description = $description;

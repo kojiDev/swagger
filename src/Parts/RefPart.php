@@ -24,18 +24,12 @@ trait RefPart
         $this->ref = $data['$ref'] ?? null;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRef()
+    public function getRef(): ?string
     {
         return $this->ref;
     }
 
-    /**
-     * @param string|null $ref
-     */
-    public function setRef(string $ref = null): self
+    public function setRef(?string $ref): self
     {
         $this->ref = $ref;
 
