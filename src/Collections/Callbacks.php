@@ -12,30 +12,30 @@
 namespace EXSyst\OAS\Collections;
 
 use EXSyst\OAS\AbstractObject;
-use EXSyst\OAS\Header;
+use EXSyst\OAS\Callback;
 use function EXSyst\OAS\referenceOr;
 
 /**
  * Helper class - Does not exist in actual Spec.
  */
-final class Headers extends AbstractObject
+final class Callbacks extends AbstractObject
 {
-    private $headers = [];
+    private $callbacks = [];
 
     public function __construct(array $data = [])
     {
-        foreach ($data as $name => $header) {
-            $this->headers[$name] = referenceOr(Header::class, $header);
+        foreach ($data as $key => $callback) {
+            $this->callbacks[$key] = referenceOr(Callback::class, $callback);
         }
     }
 
     protected function export(): array
     {
-        return $this->headers;
+        return $this->callbacks;
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->headers);
+        return empty($this->callbacks);
     }
 }

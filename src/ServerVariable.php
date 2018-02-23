@@ -11,29 +11,35 @@
 
 namespace EXSyst\OAS;
 
-final class Header extends AbstractObject
+final class ServerVariable extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
+
+    /** @var string[] */
+    private $enum;
+
+    /** @var string */
+    private $default;
 
     /** @var string */
     private $description;
 
-    /** @var Schema|Reference */
-    private $schema;
-
     public function __construct(array $data)
     {
+        $this->default = $data['default'];
+        $this->enum = $data['enum'] ?? [];
         $this->description = $data['description'] ?? null;
-        $this->schema = isset($data['schema']) ? referenceOr(Schema::class, $data['schema']) : null;
-
-        $this->mergeExtensions($data);
     }
 
-    public function export(): array
+    protected function export(): array
     {
         $return = [
-            'schema' => $this->schema,
+            'default' => $this->default,
         ];
+
+        if (!empty($this->enum)) {
+            $return['enum'] = $this->enum;
+        }
 
         if ($this->description) {
             $return['description'] = $this->description;

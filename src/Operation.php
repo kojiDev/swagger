@@ -9,30 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\ConsumesPart;
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Parts\ExternalDocsPart;
-use EXSyst\Component\Swagger\Parts\ParametersPart;
-use EXSyst\Component\Swagger\Parts\ProducesPart;
-use EXSyst\Component\Swagger\Parts\ResponsesPart;
-use EXSyst\Component\Swagger\Parts\SchemesPart;
-use EXSyst\Component\Swagger\Parts\SecurityPart;
-use EXSyst\Component\Swagger\Parts\TagsPart;
-use EXSyst\Component\Swagger\Util\MergeHelper;
+use EXSyst\OAS\Collections\Callbacks;
+use EXSyst\OAS\Collections\Parameters;
 
-final class Operation extends AbstractModel
+final class Operation extends AbstractObject
 {
-    use ConsumesPart;
-    use ProducesPart;
-    use TagsPart;
-    use ParametersPart;
-    use ResponsesPart;
-    use SchemesPart;
-    use ExternalDocsPart;
     use ExtensionPart;
-    use SecurityPart;
+
+    /** @var string[] */
+    private $tags;
 
     /** @var string */
     private $summary;
@@ -43,119 +30,82 @@ final class Operation extends AbstractModel
     /** @var string */
     private $operationId;
 
+    /** @var Parameters */
+    private $parameters;
+
+    /** @var RequestBody|Reference */
+    private $requestBody;
+
+    /** @var Responses */
+    private $responses;
+
+    /** @var Callbacks */
+    private $callbacks;
+
     /** @var bool */
     private $deprecated;
 
-    public function __construct($data = [])
+    /** @var SecurityRequirement */
+    private $security; // TODO
+
+    /** @var Server[] */
+    private $servers; // TODO
+
+    public function __construct(array $data = [])
     {
-        $this->merge($data);
+        $this->tags = $data['tags'] ?? [];
+        $this->summary = $data['summary'] ?? null;
+        $this->description = $data['description'] ?? null;
+        $this->operationId = $data['operationId'] ?? null;
+        $this->parameters = new Parameters($data['parameters'] ?? []);
+        $this->requestBody = referenceOr(RequestBody::class, $data['requestBody'] ?? []);
+        $this->responses = new Responses($data['responses'] ?? []);
+        $this->deprecated = $data['deprecated'] ?? false;
+        $this->callbacks = new Callbacks($data['callbacks'] ?? []);
+
+        $this->mergeExtensions($data);
     }
 
-    protected function doMerge($data, $overwrite = false)
+    protected function export(): array
     {
-        MergeHelper::mergeFields($this->summary, $data['summary'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->description, $data['description'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->operationId, $data['operationId'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->deprecated, $data['deprecated'] ?? null, $overwrite);
+        $return = [];
 
-        $this->mergeConsumes($data, $overwrite);
-        $this->mergeExtensions($data, $overwrite);
-        $this->mergeExternalDocs($data, $overwrite);
-        $this->mergeParameters($data, $overwrite);
-        $this->mergeProduces($data, $overwrite);
-        $this->mergeResponses($data, $overwrite);
-        $this->mergeSchemes($data, $overwrite);
-        $this->mergeSecurity($data, $overwrite);
-        $this->mergeTags($data, $overwrite);
-    }
+        if (count($this->tags) !== 0) {
+            $return['tags'] = $this->tags;
+        }
 
-    protected function doExport(): array
-    {
-        return [
-            'summary' => $this->getSummary(),
-            'description' => $this->getDescription(),
-            'operationId' => $this->getOperationId(),
-            'deprecated' => $this->getDeprecated(),
-            'consumes' => $this->getConsumes() ?: null,
-            'produces' => $this->getProduces() ?: null,
-            'parameters' => $this->getParameters(),
-            'responses' => $this->getResponses(),
-            'schemes' => $this->getSchemes() ?: null,
-            'tags' => $this->getTags() ?: null,
-            'externalDocs' => $this->getExternalDocs(),
-            'security' => $this->getSecurity(),
-        ];
-    }
+        if ($this->summary) {
+            $return['summary'] = $this->summary;
+        }
 
-    /**
-     * @return string
-     */
-    public function getSummary()
-    {
-        return $this->summary;
-    }
+        if ($this->description) {
+            $return['description'] = $this->description;
+        }
 
-    /**
-     * @param string $summary
-     */
-    public function setSummary($summary): self
-    {
-        $this->summary = $summary;
+        if ($this->operationId) {
+            $return['operationId'] = $this->operationId;
+        }
 
-        return $this;
-    }
+        if (!$this->parameters->isEmpty()) {
+            $return['parameters'] = $this->parameters;
+        }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
+        if ($this->requestBody) {
+            $return['requestBody'] = $this->requestBody;
+        }
 
-    /**
-     * @param string $description
-     */
-    public function setDescription($description): self
-    {
-        $this->description = $description;
+        if (!$this->responses->isEmpty()) {
+            $return['responses'] = $this->responses;
+        }
 
-        return $this;
-    }
+        if (!$this->callbacks->isEmpty()) {
+            $return['callbacks'] = $this->callbacks;
+        }
 
-    /**
-     * @return string
-     */
-    public function getOperationId()
-    {
-        return $this->operationId;
-    }
+        if ($this->deprecated === true) {
+            $return['deprecated'] = $this->deprecated;
+        }
 
-    /**
-     * @param string $operationId
-     */
-    public function setOperationId($operationId): self
-    {
-        $this->operationId = $operationId;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getDeprecated()
-    {
-        return $this->deprecated;
-    }
-
-    /**
-     * @param bool $deprecated
-     */
-    public function setDeprecated($deprecated): self
-    {
-        $this->deprecated = $deprecated;
-
-        return $this;
+        return $return;
     }
 }

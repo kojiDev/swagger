@@ -9,15 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Util\MergeHelper;
-
-final class Contact extends AbstractModel
+final class Contact extends AbstractObject
 {
-    const REQUIRED = false;
-
     use ExtensionPart;
 
     /** @var string */
@@ -29,80 +24,31 @@ final class Contact extends AbstractModel
     /** @var string */
     private $email;
 
-    public function __construct($data = [])
+    public function __construct(array $data = [])
     {
-        $this->merge($data);
+        $this->name = $data['name'] ?? null;
+        $this->url = $data['url'] ?? null;
+        $this->email = $data['email'] ?? null;
+
+        $this->mergeExtensions($data);
     }
 
-    protected function doMerge($data, $overwrite = false)
+    protected function export(): array
     {
-        MergeHelper::mergeFields($this->name, $data['name'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->url, $data['url'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->email, $data['email'] ?? null, $overwrite);
+        $return = [];
 
-        $this->mergeExtensions($data, $overwrite);
-    }
+        if ($this->name) {
+            $return['name'] = $this->name;
+        }
 
-    protected function doExport(): array
-    {
-        return [
-            'name' => $this->name,
-            'url' => $this->url,
-            'email' => $this->email,
-        ];
-    }
+        if ($this->url) {
+            $return['url'] = $this->url;
+        }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+        if ($this->email) {
+            $return['email'] = $this->email;
+        }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setUrl($url): self
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     */
-    public function setEmail($email): self
-    {
-        $this->email = $email;
-
-        return $this;
+        return $return;
     }
 }

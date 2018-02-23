@@ -9,98 +9,56 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger\Collections;
+namespace EXSyst\OAS\Collections;
 
-use EXSyst\Component\Swagger\AbstractModel;
-use EXSyst\Component\Swagger\Parameter;
-use EXSyst\Component\Swagger\Parts\RefPart;
+use EXSyst\OAS\AbstractObject;
+use EXSyst\OAS\Parameter;
+use EXSyst\OAS\Reference;
+use function EXSyst\OAS\getShortType;
+use function EXSyst\OAS\referenceOr;
 
-final class Parameters extends AbstractModel implements \IteratorAggregate
+/**
+ * Helper class - Does not exist in actual Spec.
+ */
+final class Parameters extends AbstractObject
 {
-    const REQUIRED = false;
-
-    use RefPart;
-
+    /** @var Parameter[]|Reference[] */
     private $parameters = [];
 
-    public function __construct($data = [])
+    public function __construct(array $data)
     {
-        $this->merge($data);
-    }
-
-    protected function doMerge($data, $overwrite = false)
-    {
-        $this->mergeRef($data, $overwrite);
-        if (!$this->hasRef()) {
-            foreach ($data as $parameter) {
-                $this->add(new Parameter($parameter));
-            }
+        foreach ($data as $parameter) {
+            $this->add(referenceOr(Parameter::class, $parameter));
         }
     }
 
-    protected function doExport(): array
+    protected function export(): array
     {
-        if ($this->hasRef()) {
-            return ['$ref' => $this->getRef()];
-        }
-
         return array_values($this->parameters);
     }
 
-    /**
-     * Searches whether a parameter with the given unique combination exists.
-     */
-    public function has(string $name, string $in = null): bool
+    public function add($parameter): self
     {
-        $id = $in ? $name.'/'.$in : $name;
-
-        return isset($this->parameters[$id]);
-    }
-
-    public function get(string $name, string $in = null): Parameter
-    {
-        if (!$this->has($name, $in)) {
-            $this->add(
-                new Parameter(['name' => $name, 'in' => $in])
+        if ($parameter instanceof Parameter) {
+            $this->parameters[$this->getIdentifier($parameter)] = $parameter;
+        } elseif ($parameter instanceof Reference) {
+            $this->parameters[$parameter->getRef()] = $parameter;
+        } else {
+            throw new \Exception(
+                sprintf('Parameter should be either Parameter or Reference Object, %s given', getShortType($parameter))
             );
         }
-
-        $id = $in ? $name.'/'.$in : $name;
-
-        return $this->parameters[$id];
-    }
-
-    /**
-     * Adds a parameter.
-     */
-    public function add(Parameter $parameter): self
-    {
-        $this->parameters[$this->getIdentifier($parameter)] = $parameter;
-
-        return $this;
-    }
-
-    /**
-     * Removes a parameter.
-     */
-    public function remove(Parameter $parameter): self
-    {
-        unset($this->parameters[$this->getIdentifier($parameter)]);
 
         return $this;
     }
 
     private function getIdentifier(Parameter $parameter)
     {
-        if ($parameter->hasRef()) {
-            return $parameter->getRef();
-        }
-
-        return $parameter->getName().'/'.$parameter->getIn();
+        return $parameter->getName() . '/' . $parameter->getIn();
     }
 
-    public function getIterator(): \ArrayIterator
+    public function isEmpty(): bool
     {
-        return new \ArrayIterator(array_values($this->parameters));
+        return empty($this->parameters);
     }
 }

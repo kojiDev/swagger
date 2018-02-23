@@ -9,228 +9,161 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Collections\Definitions;
-use EXSyst\Component\Swagger\Parts\DescriptionPart;
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Parts\ExternalDocsPart;
-use EXSyst\Component\Swagger\Parts\ItemsPart;
-use EXSyst\Component\Swagger\Parts\RefPart;
-use EXSyst\Component\Swagger\Parts\TypePart;
-use EXSyst\Component\Swagger\Util\MergeHelper;
+use EXSyst\OAS\Collections\Schemas;
 
-class Schema extends AbstractModel
+class Schema extends AbstractObject
 {
-    use RefPart;
-    use TypePart;
-    use DescriptionPart;
-    use ItemsPart;
-    use ExternalDocsPart;
     use ExtensionPart;
 
-    /** @var string */
-    private $discriminator;
-
-    /** @var bool */
-    private $readOnly;
-
-    /** @var string */
     private $title;
 
-    /** @var string */
-    private $example;
+    private $multipleOf;
 
-    /** @var array|bool */
+    private $maximum;
+
+    private $exclusiveMaximum;
+
+    private $minimum;
+
+    private $exclusiveMinimum;
+
+    private $maxLength;
+
+    private $minLength;
+
+    private $pattern;
+
+    private $maxItems;
+
+    private $minItems;
+
+    private $uniqueItems;
+
+    private $maxProperties;
+
+    private $minProperties;
+
+    /** @var string[]|null */
     private $required;
 
-    /** @var Definitions */
+    private $enum;
+
+    /** @var string */
+    private $type;
+
+    /** @var Reference[]|Schema[]|Schemas */
+    private $allOf;
+
+    private $oneOf;
+
+    private $anyOf;
+
+    private $not;
+
+    /** @var Schema|Reference|null */
+    private $items;
+
+    /** @var Schemas|Schema[]|Reference[] */
     private $properties;
 
-    /** @var array */
-    private $allOf = [];
-
-    /** @var Schema */
+    /** @var bool|Schema|Reference */
     private $additionalProperties;
 
-    public function __construct($data = [])
+    /** @var string|null */
+    private $description;
+
+    /** @var string|null */
+    private $format;
+
+    /** @var mixed */
+    private $default;
+
+    private $nullable;
+
+    private $discriminator;
+
+    private $readOnly;
+
+    private $writeOnly;
+
+    private $xml;
+
+    private $externalDocs;
+
+    /** @var string|null */
+    private $example;
+
+    private $deprecated;
+
+
+    public function __construct(array $data)
     {
-        $this->properties = new Definitions();
-        $this->merge($data);
-    }
+        $this->type = $data['type'] ?? null;
 
-    protected function doMerge($data, $overwrite = false)
-    {
-        MergeHelper::mergeFields($this->required, $data['required'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->title, $data['title'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->discriminator, $data['discriminator'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->readOnly, $data['readOnly'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->example, $data['example'] ?? null, $overwrite);
-
-        $this->properties->merge($data['properties'] ?? [], $overwrite);
-
-        foreach ($data['allOf'] ?? [] as $schema) {
-            $this->allOf[] = new self($schema);
+        if (isset($data['allOf'])) {
+            $this->allOf = instantiateBulk(Schema::class, $data['allOf']);
         }
 
+        $this->example = $data['example'] ?? null;
+        $this->default = $data['default'] ?? null;
+        $this->description = $data['description'] ?? null;
         if (isset($data['additionalProperties'])) {
-            if (null === $this->additionalProperties) {
-                $this->additionalProperties = new self();
-            }
+            $this->additionalProperties = is_bool($data['additionalProperties']) ?
+                $data['additionalProperties'] :
+                referenceOr(Schema::class, $data['additionalProperties']);
+        }
+        $this->required = $data['required'] ?? null;
+        $this->items = isset($data['items']) ? referenceOr(Schema::class, $data['items']) : null;
+        $this->properties = new Schemas($data['properties'] ?? []);
+        $this->format = $data['format'] ?? null;
+    }
 
-            $this->additionalProperties->merge($data['additionalProperties'], $overwrite);
+    protected function export(): array
+    {
+        $return = [];
+
+        if (!is_null($this->required)) {
+            $return['required'] = $this->required;
         }
 
-        $this->mergeDescription($data, $overwrite);
-        $this->mergeExternalDocs($data, $overwrite);
-        $this->mergeExtensions($data, $overwrite);
-        $this->mergeItems($data, $overwrite);
-        $this->mergeRef($data, $overwrite);
-        $this->mergeType($data, $overwrite);
-    }
-
-    protected function doExport()
-    {
-        if ($this->hasRef()) {
-            return ['$ref' => $this->getRef()];
+        if ($this->type) {
+            $return['type'] = $this->type;
         }
 
-        return array_merge([
-            'title' => $this->title,
-            'discriminator' => $this->discriminator,
-            'description' => $this->description,
-            'readOnly' => $this->readOnly,
-            'example' => $this->example,
-            'externalDocs' => $this->externalDocs,
-            'items' => $this->items,
-            'required' => $this->required,
-            'properties' => $this->properties,
-            'additionalProperties' => $this->additionalProperties,
-            'allOf' => $this->allOf ?: null,
-        ], $this->doExportType());
-    }
+        if ($this->description) {
+            $return['description'] = $this->description;
+        }
 
-    /**
-     * @return bool|array
-     */
-    public function getRequired()
-    {
-        return $this->required;
-    }
+        if ($this->items) {
+            $return['items'] = $this->items;
+        }
 
-    /**
-     * @param bool|array $required
-     *
-     * @return $this
-     */
-    public function setRequired($required)
-    {
-        $this->required = $required;
+        if (!$this->properties->isEmpty()) {
+            $return['properties'] = $this->properties;
+        }
 
-        return $this;
-    }
+        if ($this->format) {
+            $return['format'] = $this->format;
+        }
 
-    /**
-     * @return string|null
-     */
-    public function getDiscriminator()
-    {
-        return $this->discriminator;
-    }
+        if ($this->example) {
+            $return['example'] = $this->example;
+        }
 
-    /**
-     * @param string|null $discriminator
-     *
-     * @return Schema
-     */
-    public function setDiscriminator($discriminator)
-    {
-        $this->discriminator = $discriminator;
+        if (!is_null($this->additionalProperties)) {
+            $return['additionalProperties'] = $this->additionalProperties;
+        }
 
-        return $this;
-    }
+        if (!is_null($this->default)) {
+            $return['default'] = $this->default;
+        }
 
-    /**
-     * @return bool|null
-     */
-    public function isReadOnly()
-    {
-        return $this->readOnly;
-    }
+        if (!is_null($this->allOf)) {
+            $return['allOf'] = $this->allOf;
+        }
 
-    /**
-     * @param bool|null $readOnly
-     *
-     * @return Schema
-     */
-    public function setReadOnly($readOnly)
-    {
-        $this->readOnly = $readOnly;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getExample()
-    {
-        return $this->example;
-    }
-
-    /**
-     * @param string|null $example
-     *
-     * @return Schema
-     */
-    public function setExample($example)
-    {
-        $this->example = $example;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string|null $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return Definitions
-     */
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllOf(): array
-    {
-        return $this->allOf;
-    }
-
-    /**
-     * @return Schema|null
-     */
-    public function getAdditionalProperties()
-    {
-        return $this->additionalProperties;
+        return $return;
     }
 }

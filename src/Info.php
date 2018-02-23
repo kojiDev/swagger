@@ -9,21 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\DescriptionPart;
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Util\MergeHelper;
-
-final class Info extends AbstractModel
+final class Info extends AbstractObject implements ExtensibleInterface
 {
-    const REQUIRED = false;
-
-    use DescriptionPart;
     use ExtensionPart;
 
     /** @var string */
     private $title;
+
+    /** @var string */
+    private $description;
 
     /** @var string */
     private $termsOfService;
@@ -37,108 +33,45 @@ final class Info extends AbstractModel
     /** @var string */
     private $version;
 
-    public function __construct($data = [])
+    public function __construct(array $data)
     {
-        $this->contact = new Contact();
-        $this->license = new License();
+        $this->title = $data['title'];
+        $this->description = $data['description'] ?? null;
+        $this->termsOfService = $data['termsOfService'] ?? null;
+        if (isset($data['contact'])) {
+            $this->contact = new Contact($data['contact']);
+        }
+        if (isset($data['license'])) {
+            $this->license = new License($data['license']);
+        }
+        $this->version = $data['version'];
 
-        $this->merge($data);
+        $this->mergeExtensions($data);
     }
 
-    protected function doMerge($data, $overwrite = false)
+    protected function export(): array
     {
-        MergeHelper::mergeFields($this->title, $data['title'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->termsOfService, $data['termsOfService'] ?? null, $overwrite);
-        MergeHelper::mergeFields($this->version, $data['version'] ?? null, $overwrite);
-
-        $this->contact->merge($data['contact'] ?? [], $overwrite);
-        $this->license->merge($data['license'] ?? [], $overwrite);
-
-        $this->mergeDescription($data, $overwrite);
-        $this->mergeExtensions($data, $overwrite);
-    }
-
-    protected function doExport(): array
-    {
-        return [
-            'title' => $this->title,
-            'description' => $this->description,
-            'termsOfService' => $this->termsOfService,
-            'contact' => $this->contact,
-            'license' => $this->license,
+        $return = [
+            'title'   => $this->title,
             'version' => $this->version,
         ];
-    }
 
-    /**
-     * @return string|null
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
+        if ($this->description) {
+            $return['description'] = $this->description;
+        }
 
-    /**
-     * @param string|null $title
-     */
-    public function setTitle($title): self
-    {
-        $this->title = $title;
+        if ($this->termsOfService) {
+            $return['termsOfService'] = $this->termsOfService;
+        }
 
-        return $this;
-    }
+        if ($this->contact) {
+            $return['contact'] = $this->contact;
+        }
 
-    /**
-     * @return string|null
-     */
-    public function getTerms()
-    {
-        return $this->termsOfService;
-    }
+        if ($this->license) {
+            $return['license'] = $this->license;
+        }
 
-    /**
-     * @param string|null $terms
-     */
-    public function setTerms($terms): self
-    {
-        $this->termsOfService = $terms;
-
-        return $this;
-    }
-
-    /**
-     * @return Contact
-     */
-    public function getContact()
-    {
-        return $this->contact;
-    }
-
-    /**
-     * @return License
-     */
-    public function getLicense()
-    {
-        return $this->license;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     * @param string|null $version
-     *
-     * @return Info
-     */
-    public function setVersion($version): self
-    {
-        $this->version = $version;
-
-        return $this;
+        return $return;
     }
 }

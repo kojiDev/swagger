@@ -11,20 +11,20 @@
 
 namespace EXSyst\OAS;
 
-final class License extends AbstractObject implements ExtensibleInterface
+final class ExternalDocumentation extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
     /** @var string */
-    private $name;
+    private $description;
 
-    /** @var string|null */
+    /** @var string */
     private $url;
 
     public function __construct(array $data)
     {
-        $this->name = $data['name'];
-        $this->url = $data['url'] ?? null;
+        $this->url = $data['url'];
+        $this->description = $data['description'];
 
         $this->mergeExtensions($data);
     }
@@ -32,11 +32,11 @@ final class License extends AbstractObject implements ExtensibleInterface
     protected function export(): array
     {
         $return = [
-            'name' => $this->name,
+            'url' => $this->url,
         ];
 
-        if ($this->url) {
-            $return['url'] = $this->url;
+        if ($this->description) {
+            $return['description'] = $this->description;
         }
 
         return $return;

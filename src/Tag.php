@@ -9,78 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\DescriptionPart;
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Parts\ExternalDocsPart;
-
-final class Tag extends AbstractModel
+final class Tag extends AbstractObject
 {
-    use DescriptionPart;
-    use ExternalDocsPart;
     use ExtensionPart;
 
+    /** @var string */
     private $name;
+
+    /** @var string */
+    private $description;
+
+    /** @var ExternalDocumentation */
+    private $externalDocs;
 
     public function __construct($data)
     {
-        $data = $this->normalize($data);
-        if (!isset($data['name'])) {
-            throw new \InvalidArgumentException('A tag must have a name.');
+        $this->name = $data['name'];
+        $this->description = $data['description'] ?? null;
+        $this->externalDocs = isset($data['externalDocs']) ? new ExternalDocumentation($data['externalDocs']) : null;
+    }
+
+    protected function export(): array
+    {
+        $return = [
+            'name' => $this->name,
+        ];
+
+        if ($this->description) {
+            $return['description'] = $this->description;
         }
 
-        $this->name = $data['name'];
-        $this->merge($data);
-    }
-
-    protected function doMerge($data, $overwrite = false)
-    {
-        $this->mergeDescription($data, $overwrite);
-        $this->mergeExtensions($data, $overwrite);
-        $this->mergeExternalDocs($data, $overwrite);
-    }
-
-    public function toArray()
-    {
-        $return = parent::toArray();
-        if (1 === count($return)) {
-            return $return['name'];
+        if ($this->externalDocs) {
+            $return['externalDocs'] = $this->externalDocs;
         }
 
         return $return;
-    }
-
-    protected function doExport(): array
-    {
-        return [
-            'name' => $this->name,
-            'description' => $this->description,
-            'externalDocs' => $this->externalDocs,
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string|array $data
-     *
-     * @return array
-     */
-    protected function normalize($data): array
-    {
-        if (is_string($data)) {
-            return [
-                'name' => $data,
-            ];
-        }
-
-        return parent::normalize($data);
     }
 }

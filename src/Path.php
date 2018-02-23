@@ -9,86 +9,97 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Parts\ParametersPart;
+use EXSyst\OAS\Collections\Parameters;
 
-final class Path extends AbstractModel
+final class Path extends AbstractObject
 {
     use ExtensionPart;
-    use ParametersPart;
 
-    private $operations = [];
+    private static $methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
-    public function __construct($data = [])
+    /** @var string|null */
+    private $ref;
+
+    /** @var string|null */
+    private $summary;
+
+    /** @var string|null */
+    private $description;
+
+    /** @var Operation|null */
+    private $get;
+
+    /** @var Operation|null */
+    private $put;
+
+    /** @var Operation|null */
+    private $post;
+
+    /** @var Operation|null */
+    private $delete;
+
+    /** @var Operation|null */
+    private $options;
+
+    /** @var Operation|null */
+    private $head;
+
+    /** @var Operation|null */
+    private $patch;
+
+    /** @var Operation|null */
+    private $trace;
+
+    /** @var Server[] */
+    private $servers;
+
+    /** @var Parameters */
+    private $parameters;
+
+    public function __construct(array $data = [])
     {
-        $this->merge($data);
+        $this->ref = $data['ref'] ?? null;
+        $this->summary = $data['summary'] ?? null;
+        $this->description = $data['description'] ?? null;
+
+        foreach (self::$methods as $method) {
+            $this->{$method} = isset($data[$method]) ? new Operation($data[$method]) : null;
+        }
+
+        $this->servers = instantiateBulk(Server::class, $data['servers'] ?? []);
+        $this->parameters = new Parameters($data['parameters'] ?? []);
+
+        $this->mergeExtensions($data);
     }
 
-    protected function doMerge($data, $overwrite = false)
+    protected function export(): array
     {
-        foreach (Swagger::$METHODS as $method) {
-            if (isset($data[$method])) {
-                $this->getOperation($method)->merge($data[$method]);
+        $return = [];
+
+        if ($this->summary) {
+            $return['summary'] = $this->summary;
+        }
+
+        if ($this->description) {
+            $return['description'] = $this->description;
+        }
+
+        foreach (self::$methods as $method) {
+            if ($this->$method) {
+                $return[$method] = $this->$method;
             }
         }
-        $this->mergeExtensions($data, $overwrite);
-        $this->mergeParameters($data, $overwrite);
-    }
 
-    protected function doExport(): array
-    {
-        return array_merge($this->operations, array('parameters' => $this->getParameters()));
-    }
-
-    public function getOperations(): array
-    {
-        return $this->operations;
-    }
-
-    /**
-     * Gets the operation for the given method, creates one if none exists.
-     */
-    public function getOperation(string $method): Operation
-    {
-        if (!$this->hasOperation($method)) {
-            $this->setOperation($method, new Operation());
+        if (count($this->servers) !== 0) {
+            $return['servers'] = $this->servers;
         }
 
-        return $this->operations[$method];
-    }
+        if (!$this->parameters->isEmpty()) {
+            $return['parameters'] = $this->parameters;
+        }
 
-    /**
-     * Sets the operation for a method.
-     */
-    public function setOperation(string $method, Operation $operation): self
-    {
-        $this->operations[$method] = $operation;
-
-        return $this;
-    }
-
-    public function hasOperation(string $method): bool
-    {
-        return isset($this->operations[$method]);
-    }
-
-    /**
-     * Removes an operation for the given method.
-     */
-    public function removeOperation(string $method): self
-    {
-        unset($this->operations[$method]);
-
-        return $this;
-    }
-
-    /**
-     * Returns all methods for this path.
-     */
-    public function getMethods(): array
-    {
-        return array_keys($this->operations);
+        return $return;
     }
 }

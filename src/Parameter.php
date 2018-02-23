@@ -9,26 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Component\Swagger;
+namespace EXSyst\OAS;
 
-use EXSyst\Component\Swagger\Parts\DescriptionPart;
-use EXSyst\Component\Swagger\Parts\ExtensionPart;
-use EXSyst\Component\Swagger\Parts\ItemsPart;
-use EXSyst\Component\Swagger\Parts\RefPart;
-use EXSyst\Component\Swagger\Parts\RequiredPart;
-use EXSyst\Component\Swagger\Parts\SchemaPart;
-use EXSyst\Component\Swagger\Parts\TypePart;
-use EXSyst\Component\Swagger\Util\MergeHelper;
-
-final class Parameter extends AbstractModel
+final class Parameter extends AbstractObject
 {
-    use RefPart;
-    use DescriptionPart;
-    use SchemaPart;
-    use TypePart;
-    use ItemsPart;
-    use RequiredPart;
     use ExtensionPart;
+
+    const
+        IN_QUERY = 'query',
+        IN_HEADER = 'header',
+        IN_PATH = 'path',
+        IN_COOKIE = 'cookie';
 
     /** @var string */
     private $name;
@@ -36,92 +27,101 @@ final class Parameter extends AbstractModel
     /** @var string */
     private $in;
 
+    /** @var string */
+    private $description;
+
+    /** @var bool */
+    private $required;
+
+    /** @var bool|null */
+    private $deprecated;
+
     /** @var bool|null */
     private $allowEmptyValue;
 
-    public function __construct($data = [])
+    /** @var Schema|Reference */
+    private $schema;
+
+    /** @var string */
+    private $style;
+
+    /** @var bool */
+    private $explode;
+
+    /** @var bool */
+    private $allowReserved;
+
+    private $content; // TODO:
+
+    private $example; // TODO:
+
+    private $examples; // TODO:
+
+    public function __construct(array $data)
     {
-        $data = $this->normalize($data);
-        $this->merge($data);
+        $this->name = $data['name'];
+        $this->in = $data['in'];
+        $this->description = $data['description'] ?? null;
+        $this->required = $this->in === self::IN_PATH ? true : ($data['required'] ?? null);
+        $this->deprecated = $data['deprecated'] ?? null;
+        $this->allowEmptyValue = $this->in === self::IN_QUERY ? ($data['allowEmptyValue'] ?? null) : null;
+        $this->style = $data['style'] ?? null;
+        $this->schema = $data['schema'] ?? null;
 
-        if (!$this->hasRef()) {
-            if (!isset($data['name']) || !isset($data['in'])) {
-                throw new \InvalidArgumentException('"in" and "name" are required for parameters');
-            }
+        $this->mergeExtensions($data);
+    }
 
-            $this->name = $data['name'];
-            $this->in = $data['in'];
+    protected function export(): array
+    {
+        $return = [
+            'name' => $this->name,
+            'in'   => $this->in,
+        ];
+
+        if ($this->description) {
+            $return['description'] = $this->description;
         }
-    }
 
-    protected function doMerge($data, $overwrite = false)
-    {
-        MergeHelper::mergeFields($this->allowEmptyValue, $data['allowEmptyValue'] ?? null, $overwrite);
-
-        $this->mergeDescription($data, $overwrite);
-        $this->mergeExtensions($data, $overwrite);
-        $this->mergeItems($data, $overwrite);
-        $this->mergeRef($data, $overwrite);
-        $this->mergeRequired($data, $overwrite);
-        $this->mergeSchema($data, $overwrite);
-        $this->mergeType($data, $overwrite);
-    }
-
-    protected function doExport(): array
-    {
-        if ($this->hasRef()) {
-            return ['$ref' => $this->getRef()];
+        if (!is_null($this->required)) {
+            $return['required'] = $this->required;
         }
 
-        return array_merge(
-            [
-                'name' => $this->name,
-                'in' => $this->in,
-                'allowEmptyValue' => $this->allowEmptyValue,
-                'required' => $this->required,
-                'description' => $this->description,
-                'schema' => $this->schema,
-                'items' => $this->items,
-            ],
-            $this->doExportType()
-        );
+        if ($this->deprecated === true) {
+            $return['deprecated'] = $this->deprecated;
+        }
+
+        if ($this->allowEmptyValue) {
+            $return['allowEmptyValue'] = $this->allowEmptyValue;
+        }
+
+        if ($this->schema) {
+            $return['schema'] = $this->schema;
+        }
+
+        if ($this->style) {
+            $return['style'] = $this->style;
+        }
+
+        if ($this->explode) {
+            $return['explode'] = $this->explode;
+        }
+
+        if ($this->allowReserved) {
+            $return['allowReserved'] = $this->allowReserved;
+        }
+
+        return $return;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getIn()
+    public function getIn(): string
     {
         return $this->in;
     }
 
-    /**
-     * @return bool
-     */
-    public function getAllowEmptyValue()
-    {
-        return $this->allowEmptyValue;
-    }
-
-    /**
-     * Sets the ability to pass empty-valued parameters. This is valid only for either `query` or
-     * `formData` parameters and allows you to send a parameter with a name only or an empty value.
-     * Default value is `false`.
-     *
-     * @param bool $allowEmptyValue
-     */
-    public function setAllowEmptyValue($allowEmptyValue): self
-    {
-        $this->allowEmptyValue = $allowEmptyValue;
-
-        return $this;
-    }
+    // TODO: Getters/Setters
 }
