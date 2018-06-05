@@ -52,36 +52,54 @@ final class Contact extends AbstractModel
         ];
     }
 
-    public function getName(): ?string
+    /**
+     * @return string
+     */
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * @param string $name
+     */
+    public function setName($name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getUrl(): ?string
+    /**
+     * @return string
+     */
+    public function getUrl()
     {
         return $this->url;
     }
 
-    public function setUrl(string $url): self
+    /**
+     * @param string $url
+     */
+    public function setUrl($url): self
     {
         $this->url = $url;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    /**
+     * @return string
+     */
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @param string $email
+     */
+    public function setEmail($email): self
     {
         $this->email = $email;
 
