@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\Collections;
+namespace EXSyst\OpenApi\Collections;
 
-use EXSyst\OAS\AbstractObject;
-use EXSyst\OAS\Schema;
-use function EXSyst\OAS\referenceOr;
+use EXSyst\OpenApi\AbstractObject;
+use EXSyst\OpenApi\Schema;
+use function EXSyst\OpenApi\referenceOr;
 
 final class Schemas extends AbstractObject
 {

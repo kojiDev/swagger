@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\tests;
+namespace EXSyst\OpenApi\tests;
 
-use EXSyst\OAS\OpenAPI;
+use EXSyst\OpenApi\OpenAPI;
 use PHPUnit\Framework\TestCase;
 
 class FullExampleTest extends TestCase

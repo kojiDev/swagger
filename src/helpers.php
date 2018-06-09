@@ -1,12 +1,10 @@
 <?php
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use Closure;
-use EXSyst\OAS\Collections\Collection;
 use ReflectionClass;
 
-function instantiateBulk(string $schemaName, $data)
+function instantiateBulk(string $schemaName, array $data)
 {
     return array_map(function (array $item) use ($schemaName) {
         return referenceOr($schemaName, $item);
@@ -28,9 +26,9 @@ function referenceOr(string $schema, array $value)
     return isset($value['$ref']) ? new Reference($value) : (empty($value) ? null : new $schema($value));
 }
 
-function isFalse(): Closure
+function assertReferenceOr(string $schema, $value)
 {
-    return function ($value): bool {
-        return false === $value;
-    };
+    if (!$value instanceof Reference && !$value instanceof $schema) {
+        throw new \InvalidArgumentException(sprintf('Argument has to be either Reference or %s', $schema));
+    }
 }

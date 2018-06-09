@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Callbacks;
-use EXSyst\OAS\Collections\Parameters;
+use EXSyst\OpenApi\Collections\Callbacks;
+use EXSyst\OpenApi\Collections\Parameters;
 
 final class Operation extends AbstractObject
 {
@@ -45,8 +45,8 @@ final class Operation extends AbstractObject
     /** @var bool */
     private $deprecated;
 
-    /** @var SecurityRequirement */
-    private $security; // TODO
+    /** @var SecurityRequirement[] */
+    private $security;
 
     /** @var Server[] */
     private $servers; // TODO
@@ -62,6 +62,7 @@ final class Operation extends AbstractObject
         $this->responses = new Responses($data['responses'] ?? []);
         $this->deprecated = $data['deprecated'] ?? false;
         $this->callbacks = new Callbacks($data['callbacks'] ?? []);
+        $this->security = instantiateBulk(SecurityRequirement::class, $data['security'] ?? []);
 
         $this->mergeExtensions($data);
     }
@@ -106,6 +107,61 @@ final class Operation extends AbstractObject
             $return['deprecated'] = $this->deprecated;
         }
 
+        if (!empty($this->security)) {
+            $return['security'] = $this->security;
+        }
+
         return $return;
+    }
+
+    public function setOperationId(string $operationId)
+    {
+        $this->operationId = $operationId;
+    }
+
+    public function addParameter(Parameter $parameter)
+    {
+        $this->parameters->add($parameter);
+    }
+
+    public function setTags(array $tags)
+    {
+        $this->tags = $tags;
+    }
+
+    /**
+     * @param RequestBody|Reference $requestBody
+     */
+    public function setRequestBody($requestBody)
+    {
+        assertReferenceOr(RequestBody::class, $requestBody);
+
+        $this->requestBody = $requestBody;
+    }
+
+    /**
+     * @return RequestBody|Reference|null
+     */
+    public function getRequestBody()
+    {
+        return $this->requestBody;
+    }
+
+    public function getResponses(): Responses
+    {
+        return $this->responses;
+    }
+
+    /**
+     * @return SecurityRequirement[]
+     */
+    public function getSecurity(): array
+    {
+        return $this->security;
+    }
+
+    public function getOperationId(): ?string
+    {
+        return $this->operationId;
     }
 }

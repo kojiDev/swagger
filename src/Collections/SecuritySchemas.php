@@ -12,30 +12,27 @@
 namespace EXSyst\OpenApi\Collections;
 
 use EXSyst\OpenApi\AbstractObject;
-use EXSyst\OpenApi\Link;
+use EXSyst\OpenApi\SecurityScheme;
 use function EXSyst\OpenApi\referenceOr;
 
-/**
- * Helper class - Does not exist in actual Spec.
- */
-final class Links extends AbstractObject
+final class SecuritySchemas extends AbstractObject
 {
-    private $links = [];
+    private $schemas = [];
 
     public function __construct(array $data = [])
     {
-        foreach ($data as $key => $link) {
-            $this->links[$key] = referenceOr(Link::class, $link);
+        foreach ($data as $key => $parameter) {
+            $this->schemas[$key] = referenceOr(SecurityScheme::class, $parameter);
         }
-    }
-
-    protected function export(): array
-    {
-        return $this->links;
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->links);
+        return empty($this->schemas);
+    }
+
+    protected function export(): array
+    {
+        return $this->schemas;
     }
 }

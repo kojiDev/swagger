@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\Collections;
+namespace EXSyst\OpenApi\Collections;
 
 
-use EXSyst\OAS\AbstractObject;
-use EXSyst\OAS\MediaType;
+use EXSyst\OpenApi\AbstractObject;
+use EXSyst\OpenApi\MediaType;
 
 final class Content extends AbstractObject
 {
@@ -23,7 +23,7 @@ final class Content extends AbstractObject
     public function __construct(array $data = [])
     {
         foreach ($data as $mimeType => $payload) {
-            $this->payloads[$mimeType] = new MediaType($payload);
+            $this->add($mimeType, new MediaType($payload));
         }
     }
 
@@ -35,5 +35,10 @@ final class Content extends AbstractObject
     public function isEmpty(): bool
     {
         return count($this->payloads) === 0;
+    }
+
+    public function add(string $mimeType, MediaType $mediaType)
+    {
+        $this->payloads[$mimeType] = $mediaType;
     }
 }

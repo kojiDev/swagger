@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Examples;
+use EXSyst\OpenApi\Collections\Examples;
 
 final class MediaType extends AbstractObject
 {

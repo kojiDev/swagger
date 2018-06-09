@@ -1,6 +1,6 @@
 <?php
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
 /**
  * @internal

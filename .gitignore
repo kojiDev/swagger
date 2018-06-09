@@ -1,7 +1,8 @@
+/.idea/
+/vendor/
+/coverage/
 .buildpath
 .php_cs.cache
 composer.phar
 composer.lock
 phpunit.xml
-vendor/
-coverage/

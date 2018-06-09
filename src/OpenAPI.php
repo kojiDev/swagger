@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
 final class OpenAPI extends AbstractObject
 {
@@ -33,9 +33,9 @@ final class OpenAPI extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->info = new Info($data['info']);
+        $this->info = new Info($data['info'] ?? []);
         $this->servers = instantiateBulk(Server::class, $data['servers'] ?? []);
-        $this->paths = new Paths($data['paths']);
+        $this->paths = new Paths($data['paths'] ?? []);
         $this->components = new Components($data['components'] ?? []);
         $this->tags = instantiateBulk(Tag::class, $data['tags'] ?? []);
     }
@@ -61,5 +61,72 @@ final class OpenAPI extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getPaths(): Paths
+    {
+        return $this->paths;
+    }
+
+    public function setPaths(Paths $paths): void
+    {
+        $this->paths = $paths;
+    }
+
+    public function getOpenapi(): string
+    {
+        return $this->openapi;
+    }
+
+    public function getInfo(): Info
+    {
+        return $this->info;
+    }
+
+    public function setInfo(Info $info): void
+    {
+        $this->info = $info;
+    }
+
+    /**
+     * @return Server[]
+     */
+    public function getServers(): array
+    {
+        return $this->servers;
+    }
+
+    /**
+     * @param Server[] $servers
+     */
+    public function setServers(array $servers): void
+    {
+        $this->servers = $servers;
+    }
+
+    public function getComponents(): Components
+    {
+        return $this->components;
+    }
+
+    public function setComponents(Components $components): void
+    {
+        $this->components = $components;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Tag[] $tags
+     */
+    public function setTags(array $tags): void
+    {
+        $this->tags = $tags;
     }
 }

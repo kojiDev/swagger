@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Content;
+use EXSyst\OpenApi\Collections\Content;
 
 final class RequestBody extends AbstractObject
 {
@@ -26,7 +26,7 @@ final class RequestBody extends AbstractObject
     /** @var bool */
     private $required;
 
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->description = $data['description'] ?? null;
         $this->content = new Content($data['content'] ?? []);
@@ -50,5 +50,10 @@ final class RequestBody extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getContent(): Content
+    {
+        return $this->content;
     }
 }

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\Collections;
+namespace EXSyst\OpenApi\Collections;
 
-use EXSyst\OAS\AbstractObject;
-use EXSyst\OAS\ServerVariable;
+use EXSyst\OpenApi\AbstractObject;
+use EXSyst\OpenApi\ServerVariable;
 
 final class ServerVariables extends AbstractObject
 {

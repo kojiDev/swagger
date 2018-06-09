@@ -9,19 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
 final class Callback extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
-    /** @var Path[] */
+    /** @var PathItem[] */
     private $callbacks;
 
     public function __construct(array $data)
     {
         foreach ($data as $expression => $operation) {
-            $this->callbacks[$expression] = new Path($operation);
+            $this->callbacks[$expression] = new PathItem($operation);
         }
 
         $this->mergeExtensions($data);

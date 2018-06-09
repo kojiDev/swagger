@@ -9,15 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Links;
-use EXSyst\OAS\Collections\Schemas;
+use EXSyst\OpenApi\Collections\Links;
+use EXSyst\OpenApi\Collections\Schemas;
+use EXSyst\OpenApi\Collections\SecuritySchemas;
 
 final class Components extends AbstractObject
 {
     /** @var Schemas|Schema[]|Reference[] */
     private $schemas;
+
+    /** @var SecuritySchemas|SecurityScheme[]|Reference[] */
+    private $securitySchemes;
 
     /** @var Links|Link[]|Reference[] */
     private $links;
@@ -25,6 +29,7 @@ final class Components extends AbstractObject
     public function __construct(array $data)
     {
         $this->schemas = new Schemas($data['schemas'] ?? []);
+        $this->securitySchemes = new SecuritySchemas($data['securitySchemes'] ?? []);
         $this->links = new Links($data['links'] ?? []);
     }
 
@@ -32,7 +37,8 @@ final class Components extends AbstractObject
     {
         return
             $this->schemas->isEmpty() &&
-            $this->links->isEmpty();
+            $this->links->isEmpty() &&
+            $this->securitySchemes->isEmpty();
     }
 
     protected function export(): array
@@ -41,6 +47,10 @@ final class Components extends AbstractObject
 
         if (!$this->schemas->isEmpty()) {
             $return['schemas'] = $this->schemas;
+        }
+
+        if (!$this->securitySchemes->isEmpty()) {
+            $return['securitySchemes'] = $this->securitySchemes;
         }
 
         if (!$this->links->isEmpty()) {

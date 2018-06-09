@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
 final class Info extends AbstractObject implements ExtensibleInterface
 {
@@ -35,7 +35,7 @@ final class Info extends AbstractObject implements ExtensibleInterface
 
     public function __construct(array $data)
     {
-        $this->title = $data['title'];
+        $this->title = $data['title'] ?? '';
         $this->description = $data['description'] ?? null;
         $this->termsOfService = $data['termsOfService'] ?? null;
         if (isset($data['contact'])) {
@@ -73,5 +73,65 @@ final class Info extends AbstractObject implements ExtensibleInterface
         }
 
         return $return;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getTermsOfService(): ?string
+    {
+        return $this->termsOfService;
+    }
+
+    public function setTermsOfService(?string $termsOfService): void
+    {
+        $this->termsOfService = $termsOfService;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(?Contact $contact): void
+    {
+        $this->contact = $contact;
+    }
+
+    public function getLicense(): ?License
+    {
+        return $this->license;
+    }
+
+    public function setLicense(?License $license): void
+    {
+        $this->license = $license;
+    }
+
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    public function setVersion(string $version): void
+    {
+        $this->version = $version;
     }
 }

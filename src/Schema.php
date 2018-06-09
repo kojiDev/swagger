@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Schemas;
+use EXSyst\OpenApi\Collections\Schemas;
 
 class Schema extends AbstractObject
 {
@@ -48,6 +48,9 @@ class Schema extends AbstractObject
     /** @var string[]|null */
     private $required;
 
+    /**
+     * @var array
+     */
     private $enum;
 
     /** @var string */
@@ -56,10 +59,13 @@ class Schema extends AbstractObject
     /** @var Reference[]|Schema[]|Schemas */
     private $allOf;
 
+    /** @var Reference[]|Schema[]|Schemas */
     private $oneOf;
 
+    /** @var Reference[]|Schema[]|Schemas */
     private $anyOf;
 
+    /** @var Reference|Schema */
     private $not;
 
     /** @var Schema|Reference|null */
@@ -97,13 +103,18 @@ class Schema extends AbstractObject
 
     private $deprecated;
 
+    private static $ofs = ['allOf', 'anyOf', 'oneOf'];
 
     public function __construct(array $data)
     {
         $this->type = $data['type'] ?? null;
 
-        if (isset($data['allOf'])) {
-            $this->allOf = instantiateBulk(Schema::class, $data['allOf']);
+        $this->enum = $data['enum'] ?? null;
+
+        $this->nullable = $data['nullable'] ?? null;
+
+        foreach (self::$ofs as $of) {
+            $this->{$of} = instantiateBulk(Schema::class, $data[$of] ?? []);
         }
 
         $this->example = $data['example'] ?? null;
@@ -118,6 +129,10 @@ class Schema extends AbstractObject
         $this->items = isset($data['items']) ? referenceOr(Schema::class, $data['items']) : null;
         $this->properties = new Schemas($data['properties'] ?? []);
         $this->format = $data['format'] ?? null;
+
+        if (isset($data['discriminator'])) {
+            $this->discriminator = new Discriminator($data['discriminator']);
+        };
     }
 
     protected function export(): array
@@ -130,6 +145,14 @@ class Schema extends AbstractObject
 
         if ($this->type) {
             $return['type'] = $this->type;
+        }
+
+        if ($this->enum) {
+            $return['enum'] = $this->enum;
+        }
+
+        if ($this->nullable) {
+            $return['nullable'] = $this->nullable;
         }
 
         if ($this->description) {
@@ -160,8 +183,14 @@ class Schema extends AbstractObject
             $return['default'] = $this->default;
         }
 
-        if (!is_null($this->allOf)) {
-            $return['allOf'] = $this->allOf;
+        if ($this->discriminator) {
+            $return['discriminator'] = $this->discriminator;
+        }
+
+        foreach (self::$ofs as $of) {
+            if (!empty($this->{$of})) {
+                $return[$of] = $this->{$of};
+            }
         }
 
         return $return;

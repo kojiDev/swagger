@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-final class Responses extends AbstractObject
+final class Responses extends AbstractObject implements \IteratorAggregate
 {
     use ExtensionPart;
 
@@ -37,5 +37,39 @@ final class Responses extends AbstractObject
     public function isEmpty(): bool
     {
         return count($this->responses) === 0;
+    }
+
+    /**
+     * @param string $code
+     *
+     * @return Response|Reference|null
+     */
+    public function get(string $code)
+    {
+        return $this->responses[$code] ?? null;
+    }
+
+    public function has(string $code): bool
+    {
+        return isset($this->responses[$code]);
+    }
+
+    /**
+     * @param string $code
+     * @param Response|Reference $response
+     */
+    public function set(string $code, $response)
+    {
+        assertReferenceOr(Response::class, $response);
+
+        $this->responses[$code] = $response;
+    }
+
+    /**
+     * @return \Traversable|Response[]
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->responses);
     }
 }

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\Collections;
+namespace EXSyst\OpenApi\Collections;
 
-use EXSyst\OAS\AbstractObject;
-use EXSyst\OAS\Callback;
-use function EXSyst\OAS\referenceOr;
+use EXSyst\OpenApi\AbstractObject;
+use EXSyst\OpenApi\Callback;
+use function EXSyst\OpenApi\referenceOr;
 
 /**
  * Helper class - Does not exist in actual Spec.

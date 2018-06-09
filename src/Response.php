@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\Callbacks;
-use EXSyst\OAS\Collections\Content;
-use EXSyst\OAS\Collections\Headers;
-use EXSyst\OAS\Collections\Links;
+use EXSyst\OpenApi\Collections\Callbacks;
+use EXSyst\OpenApi\Collections\Content;
+use EXSyst\OpenApi\Collections\Headers;
+use EXSyst\OpenApi\Collections\Links;
 
 final class Response extends AbstractObject
 {
@@ -36,7 +36,7 @@ final class Response extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->description = $data['description'] ?? null;
+        $this->description = $data['description'] ?? '';
         $this->headers = new Headers($data['headers'] ?? []);
         $this->content = new Content($data['content'] ?? []);
         $this->callback = new Callbacks($data['callback'] ?? []);
@@ -47,9 +47,7 @@ final class Response extends AbstractObject
     {
         $return = [];
 
-        if ($this->description) {
-            $return['description'] = $this->description;
-        }
+        $return['description'] = $this->description;
 
         if (!$this->content->isEmpty()) {
             $return['content'] = $this->content;
@@ -64,5 +62,15 @@ final class Response extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 }

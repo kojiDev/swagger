@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS\Collections;
+namespace EXSyst\OpenApi\Collections;
 
-use EXSyst\OAS\AbstractObject;
+use EXSyst\OpenApi\AbstractObject;
 
 /**
  * Helper class - Does not exist in actual Spec.

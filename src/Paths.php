@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-final class Paths extends AbstractObject
+final class Paths extends AbstractObject implements \IteratorAggregate
 {
     use ExtensionPart;
 
@@ -24,7 +24,7 @@ final class Paths extends AbstractObject
                 continue;
             }
 
-            $this->paths[$key] = new Path($path);
+            $this->add($key, new PathItem($path));
         }
 
         $this->mergeExtensions($data);
@@ -33,5 +33,28 @@ final class Paths extends AbstractObject
     protected function export(): array
     {
         return $this->paths;
+    }
+
+    public function get(string $path): ?PathItem
+    {
+        return $this->paths[$path] ?? null;
+    }
+
+    public function has(string $path): bool
+    {
+        return isset($this->paths[$path]);
+    }
+
+    public function add(string $path, PathItem $pathObj)
+    {
+        $this->paths[$path] = $pathObj;
+    }
+
+    /**
+     * @return \Traversable|PathItem[]
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->paths);
     }
 }

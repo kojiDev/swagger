@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\OAS;
+namespace EXSyst\OpenApi;
 
-use EXSyst\OAS\Collections\LinkParameters;
+use EXSyst\OpenApi\Collections\LinkParameters;
 
 final class Link extends AbstractObject implements ExtensibleInterface
 {
