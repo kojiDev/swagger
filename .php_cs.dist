@@ -2,24 +2,30 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
-    ->exclude('Tests/Functional/cache')
-;
+    ->exclude('Tests/Functional/cache');
 
 return PhpCsFixer\Config::create()
     ->setRules([
-        '@Symfony' => true,
-        'ordered_imports' => true,
-        'phpdoc_order' => true,
-        'header_comment' => [
-            'header' => <<<HEADER
+        '@Symfony'               => true,
+        'ordered_imports'        => true,
+        'phpdoc_order'           => true,
+        'binary_operator_spaces' => [
+            'default' => 'align',
+
+        ],
+        'concat_space'           => [
+            'spacing' => 'one',
+        ],
+        'header_comment'         => [
+            'header' => <<<EOF
 This file is part of the Swagger package.
 
 (c) EXSyst
 
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
-HEADER
+EOF
+            ,
         ],
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);

@@ -30,9 +30,9 @@ final class OAuthFlow extends AbstractObject implements ExtensibleInterface
     public function __construct(array $data)
     {
         $this->authorizationUrl = $data['authorizationUrl'] ?? null;
-        $this->tokenUrl = $data['tokenUrl'] ?? null;
-        $this->refreshUrl = $data['refreshUrl'] ?? null;
-        $this->scopes = $data['scopes'];
+        $this->tokenUrl         = $data['tokenUrl']         ?? null;
+        $this->refreshUrl       = $data['refreshUrl']       ?? null;
+        $this->scopes           = $data['scopes'];
 
         $this->mergeExtensions($data);
     }

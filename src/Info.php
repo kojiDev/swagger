@@ -35,8 +35,8 @@ final class Info extends AbstractObject implements ExtensibleInterface
 
     public function __construct(array $data)
     {
-        $this->title = $data['title'] ?? '';
-        $this->description = $data['description'] ?? null;
+        $this->title          = $data['title']          ?? '';
+        $this->description    = $data['description']    ?? null;
         $this->termsOfService = $data['termsOfService'] ?? null;
         if (isset($data['contact'])) {
             $this->contact = new Contact($data['contact']);

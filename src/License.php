@@ -24,7 +24,7 @@ final class License extends AbstractObject implements ExtensibleInterface
     public function __construct(array $data)
     {
         $this->name = $data['name'];
-        $this->url = $data['url'] ?? null;
+        $this->url  = $data['url'] ?? null;
 
         $this->mergeExtensions($data);
     }

@@ -28,9 +28,9 @@ final class Server extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->url = $data['url'];
+        $this->url         = $data['url'];
         $this->description = $data['description'] ?? null;
-        $this->variables = new ServerVariables($data['variables'] ?? []);
+        $this->variables   = new ServerVariables($data['variables'] ?? []);
 
         $this->mergeExtensions($data);
     }

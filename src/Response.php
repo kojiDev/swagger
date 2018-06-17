@@ -37,10 +37,10 @@ final class Response extends AbstractObject
     public function __construct(array $data)
     {
         $this->description = $data['description'] ?? '';
-        $this->headers = new Headers($data['headers'] ?? []);
-        $this->content = new Content($data['content'] ?? []);
-        $this->callback = new Callbacks($data['callback'] ?? []);
-        $this->links = new Links($data['links'] ?? []);
+        $this->headers     = new Headers($data['headers'] ?? []);
+        $this->content     = new Content($data['content'] ?? []);
+        $this->callback    = new Callbacks($data['callback'] ?? []);
+        $this->links       = new Links($data['links'] ?? []);
     }
 
     protected function export(): array

@@ -11,7 +11,6 @@
 
 namespace EXSyst\OpenApi\Collections;
 
-
 use EXSyst\OpenApi\AbstractObject;
 use EXSyst\OpenApi\MediaType;
 
@@ -34,7 +33,7 @@ final class Content extends AbstractObject
 
     public function isEmpty(): bool
     {
-        return count($this->payloads) === 0;
+        return 0 === count($this->payloads);
     }
 
     public function add(string $mimeType, MediaType $mediaType)

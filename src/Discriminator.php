@@ -22,7 +22,7 @@ final class Discriminator extends AbstractObject
     public function __construct($data)
     {
         $this->propertyName = $data['propertyName'];
-        $this->mapping = $data['mapping'] ?? null;
+        $this->mapping      = $data['mapping'] ?? null;
     }
 
     protected function export(): array

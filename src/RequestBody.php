@@ -29,8 +29,8 @@ final class RequestBody extends AbstractObject
     public function __construct(array $data = [])
     {
         $this->description = $data['description'] ?? null;
-        $this->content = new Content($data['content'] ?? []);
-        $this->required = $data['required'] ?? false;
+        $this->content     = new Content($data['content'] ?? []);
+        $this->required    = $data['required'] ?? false;
 
         $this->mergeExtensions($data);
     }

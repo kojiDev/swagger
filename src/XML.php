@@ -32,11 +32,11 @@ final class XML extends AbstractObject implements ExtensibleInterface
 
     public function __construct($data = [])
     {
-        $this->name = $data['name'] ?? null;
+        $this->name      = $data['name']      ?? null;
         $this->namespace = $data['namespace'] ?? null;
-        $this->prefix = $data['prefix'] ?? null;
+        $this->prefix    = $data['prefix']    ?? null;
         $this->attribute = $data['attribute'] ?? null;
-        $this->wrapped = $data['wrapped'] ?? null;
+        $this->wrapped   = $data['wrapped']   ?? null;
 
         $this->mergeExtensions($data);
     }

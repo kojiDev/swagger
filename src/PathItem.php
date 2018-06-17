@@ -60,15 +60,15 @@ final class PathItem extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->ref = $data['ref'] ?? null;
-        $this->summary = $data['summary'] ?? null;
+        $this->ref         = $data['ref']         ?? null;
+        $this->summary     = $data['summary']     ?? null;
         $this->description = $data['description'] ?? null;
 
         foreach (self::$methods as $method) {
             $this->{$method} = isset($data[$method]) ? new Operation($data[$method]) : null;
         }
 
-        $this->servers = instantiateBulk(Server::class, $data['servers'] ?? []);
+        $this->servers    = instantiateBulk(Server::class, $data['servers'] ?? []);
         $this->parameters = new Parameters($data['parameters'] ?? []);
 
         $this->mergeExtensions($data);
@@ -98,7 +98,7 @@ final class PathItem extends AbstractObject
             }
         }
 
-        if (count($this->servers) !== 0) {
+        if (0 !== count($this->servers)) {
             $return['servers'] = $this->servers;
         }
 
@@ -174,7 +174,7 @@ final class PathItem extends AbstractObject
     }
 
     /**
-     * @param string $method
+     * @param string              $method
      * @param Operation|Reference $operation
      */
     public function setOperation(string $method, $operation)
@@ -217,6 +217,7 @@ final class PathItem extends AbstractObject
         if (!in_array($method, self::$methods)) {
             throw new \InvalidArgumentException(sprintf('Invalid method: "%s"', $method));
         }
+
         return $method;
     }
 }

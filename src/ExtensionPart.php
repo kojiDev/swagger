@@ -13,6 +13,7 @@ namespace EXSyst\OpenApi;
 
 /**
  * @internal
+ *
  * @see ExtensibleInterface
  */
 trait ExtensionPart

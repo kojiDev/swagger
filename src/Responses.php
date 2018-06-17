@@ -36,7 +36,7 @@ final class Responses extends AbstractObject implements \IteratorAggregate
 
     public function isEmpty(): bool
     {
-        return count($this->responses) === 0;
+        return 0 === count($this->responses);
     }
 
     /**
@@ -55,7 +55,7 @@ final class Responses extends AbstractObject implements \IteratorAggregate
     }
 
     /**
-     * @param string $code
+     * @param string             $code
      * @param Response|Reference $response
      */
     public function set(string $code, $response)

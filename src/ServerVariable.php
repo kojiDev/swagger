@@ -26,8 +26,8 @@ final class ServerVariable extends AbstractObject implements ExtensibleInterface
 
     public function __construct(array $data)
     {
-        $this->default = $data['default'];
-        $this->enum = $data['enum'] ?? [];
+        $this->default     = $data['default'];
+        $this->enum        = $data['enum']        ?? [];
         $this->description = $data['description'] ?? null;
     }
 

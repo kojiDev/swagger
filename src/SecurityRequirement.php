@@ -18,7 +18,7 @@ final class SecurityRequirement extends AbstractObject
 
     public function __construct(array $requirements)
     {
-        if (count($requirements) === 0) {
+        if (0 === count($requirements)) {
             throw new \InvalidArgumentException('SecurityRequirement has to has at least one requirement');
         }
 

@@ -26,8 +26,8 @@ final class Tag extends AbstractObject implements ExtensibleInterface
 
     public function __construct($data)
     {
-        $this->name = $data['name'];
-        $this->description = $data['description'] ?? null;
+        $this->name         = $data['name'];
+        $this->description  = $data['description'] ?? null;
         $this->externalDocs = isset($data['externalDocs']) ? new ExternalDocumentation($data['externalDocs']) : null;
     }
 

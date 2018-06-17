@@ -53,16 +53,16 @@ final class Operation extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->tags = $data['tags'] ?? [];
-        $this->summary = $data['summary'] ?? null;
+        $this->tags        = $data['tags']        ?? [];
+        $this->summary     = $data['summary']     ?? null;
         $this->description = $data['description'] ?? null;
         $this->operationId = $data['operationId'] ?? null;
-        $this->parameters = new Parameters($data['parameters'] ?? []);
+        $this->parameters  = new Parameters($data['parameters'] ?? []);
         $this->requestBody = referenceOr(RequestBody::class, $data['requestBody'] ?? []);
-        $this->responses = new Responses($data['responses'] ?? []);
-        $this->deprecated = $data['deprecated'] ?? false;
-        $this->callbacks = new Callbacks($data['callbacks'] ?? []);
-        $this->security = instantiateBulk(SecurityRequirement::class, $data['security'] ?? []);
+        $this->responses   = new Responses($data['responses'] ?? []);
+        $this->deprecated  = $data['deprecated'] ?? false;
+        $this->callbacks   = new Callbacks($data['callbacks'] ?? []);
+        $this->security    = instantiateBulk(SecurityRequirement::class, $data['security'] ?? []);
 
         $this->mergeExtensions($data);
     }
@@ -71,7 +71,7 @@ final class Operation extends AbstractObject
     {
         $return = [];
 
-        if (count($this->tags) !== 0) {
+        if (0 !== count($this->tags)) {
             $return['tags'] = $this->tags;
         }
 
@@ -103,7 +103,7 @@ final class Operation extends AbstractObject
             $return['callbacks'] = $this->callbacks;
         }
 
-        if ($this->deprecated === true) {
+        if (true === $this->deprecated) {
             $return['deprecated'] = $this->deprecated;
         }
 

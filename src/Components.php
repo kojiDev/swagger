@@ -28,17 +28,15 @@ final class Components extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->schemas = new Schemas($data['schemas'] ?? []);
+        $this->schemas         = new Schemas($data['schemas'] ?? []);
         $this->securitySchemes = new SecuritySchemas($data['securitySchemes'] ?? []);
-        $this->links = new Links($data['links'] ?? []);
+        $this->links           = new Links($data['links'] ?? []);
     }
 
     public function isEmpty(): bool
     {
         return
-            $this->schemas->isEmpty() &&
-            $this->links->isEmpty() &&
-            $this->securitySchemes->isEmpty();
+            $this->schemas->isEmpty() && $this->links->isEmpty() && $this->securitySchemes->isEmpty();
     }
 
     protected function export(): array

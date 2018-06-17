@@ -28,9 +28,9 @@ final class MediaType extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->schema = isset($data['schema']) ? referenceOr(Schema::class, $data['schema']) : null;
+        $this->schema   = isset($data['schema']) ? referenceOr(Schema::class, $data['schema']) : null;
         $this->examples = new Examples($data['examples'] ?? []);
-        $this->example = $data['example'] ?? null;
+        $this->example  = $data['example'] ?? null;
 
         $this->mergeExtensions($data);
     }

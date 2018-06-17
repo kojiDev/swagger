@@ -26,8 +26,8 @@ final class Contact extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->name = $data['name'] ?? null;
-        $this->url = $data['url'] ?? null;
+        $this->name  = $data['name']  ?? null;
+        $this->url   = $data['url']   ?? null;
         $this->email = $data['email'] ?? null;
 
         $this->mergeExtensions($data);

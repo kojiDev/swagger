@@ -29,9 +29,9 @@ final class Example extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->summary = $data['summary'] ?? null;
-        $this->description = $data['description'] ?? null;
-        $this->value = $data['value'] ?? null;
+        $this->summary       = $data['summary']       ?? null;
+        $this->description   = $data['description']   ?? null;
+        $this->value         = $data['value']         ?? null;
         $this->externalValue = $data['externalValue'] ?? null;
 
         $this->mergeExtensions($data);
