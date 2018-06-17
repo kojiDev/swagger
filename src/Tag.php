@@ -11,7 +11,7 @@
 
 namespace EXSyst\OpenApi;
 
-final class Tag extends AbstractObject
+final class Tag extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
