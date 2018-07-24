@@ -78,6 +78,10 @@ class Schema extends AbstractModel
                 $this->additionalProperties = new self();
             }
 
+            if (true === $data['additionalProperties']) {
+                $data['additionalProperties'] = [];
+            }
+
             $this->additionalProperties->merge($data['additionalProperties'], $overwrite);
         }
 
@@ -95,17 +99,9 @@ class Schema extends AbstractModel
             return ['$ref' => $this->getRef()];
         }
 
-        /*
-         * if additionalProperties has no special types/refs, it should return {} or true
-         *  according to https://swagger.io/docs/specification/data-models/dictionaries/
-         * Without the following code, it returns a [], which is wrong/not valid.
-         */
-        if ($this->additionalProperties instanceof self) {
-            $this->additionalProperties = $this->additionalProperties->toArray();
-            if ($this->additionalProperties === []) {
-                $this->additionalProperties = new \stdClass();
-            }
-        }
+        // if "additionalProperties" has no special types/refs, it must return `{}` or `true`
+        // @see https://swagger.io/docs/specification/data-models/dictionaries/
+        $additionalProperties = ($this->additionalProperties instanceof self && [] === $this->additionalProperties->toArray()) ?: $this->additionalProperties;
 
         return array_merge([
             'title' => $this->title,
@@ -117,7 +113,7 @@ class Schema extends AbstractModel
             'items' => $this->items,
             'required' => $this->required,
             'properties' => $this->properties,
-            'additionalProperties' => $this->additionalProperties,
+            'additionalProperties' => $additionalProperties,
             'allOf' => $this->allOf ?: null,
         ], $this->doExportType());
     }
