@@ -11,6 +11,7 @@
 
 namespace EXSyst\Component\Swagger\tests;
 
+use EXSyst\Component\Swagger\Schema;
 use EXSyst\Component\Swagger\Swagger;
 use PHPUnit\Framework\TestCase;
 
@@ -115,5 +116,38 @@ class PetstoreTest extends TestCase
 
         $this->assertEquals('APL', $license->setName('APL')->getName());
         $this->assertEquals('https://www.apache.org/licenses/LICENSE-2.0', $license->setUrl('https://www.apache.org/licenses/LICENSE-2.0')->getUrl());
+    }
+
+    public function testDictionaries()
+    {
+        $filename = __DIR__.'/fixtures/petstore-dictionaries.json';
+        $swagger = Swagger::fromFile($filename);
+
+        $swaggerAsArray = $swagger->toArray();
+
+        $this->assertEquals($this->fileToArray($filename), $swaggerAsArray);
+        $this->assertInstanceOf(Schema::class, $swagger->getDefinitions()->get('Pet')->getProperties()->get('sub-object')->getAdditionalProperties());
+        $this->assertSame(true, $swaggerAsArray['definitions']['Pet']['properties']['sub-object']['additionalProperties']);
+        $this->assertSame(null, $swagger->getDefinitions()->get('Pet')->getProperties()->get('sub-object')->getAdditionalProperties()->getType());
+        $this->assertSame(null, $swagger->getDefinitions()->get('Pet')->getProperties()->get('sub-object')->getAdditionalProperties()->getAdditionalProperties());
+        $this->assertSame('string', $swagger->getDefinitions()->get('Pet')->getProperties()->get('another-sub-object')->getAdditionalProperties()->getType());
+        $this->assertSame(null, $swagger->getDefinitions()->get('Pet')->getProperties()->get('another-sub-object')->getAdditionalProperties()->getAdditionalProperties());
+        $this->assertSame('object', $swagger->getDefinitions()->get('Pet')->getProperties()->get('nested-sub-objects')->getAdditionalProperties()->getType());
+        $this->assertInstanceOf(Schema::class, $swagger->getDefinitions()->get('Pet')->getProperties()->get('nested-sub-objects')->getAdditionalProperties()->getAdditionalProperties());
+        $this->assertSame('string', $swagger->getDefinitions()->get('Pet')->getProperties()->get('nested-sub-objects')->getAdditionalProperties()->getAdditionalProperties()->getType());
+        $this->assertSame('string', $swaggerAsArray['definitions']['Pet']['properties']['nested-sub-objects']['additionalProperties']['additionalProperties']['type']);
+        $this->assertSame('array', $swagger->getDefinitions()->get('Pet')->getProperties()->get('children')->getType());
+        $this->assertSame('array', $swaggerAsArray['definitions']['Pet']['properties']['children']['type']);
+        $this->assertInstanceOf(Schema::class, $swagger->getDefinitions()->get('Pet')->getProperties()->get('children')->getItems());
+        $this->assertSame('#/definitions/Pet', $swagger->getDefinitions()->get('Pet')->getProperties()->get('children')->getItems()->getRef());
+        $this->assertSame('#/definitions/Pet', $swaggerAsArray['definitions']['Pet']['properties']['children']['items']['$ref']);
+        $this->assertSame('object', $swaggerAsArray['definitions']['Pet']['properties']['child-pet']['type']);
+        $this->assertInstanceOf(Schema::class, $swagger->getDefinitions()->get('Pet')->getProperties()->get('child-pet')->getProperties()->get('name'));
+        $this->assertSame('string', $swagger->getDefinitions()->get('Pet')->getProperties()->get('child-pet')->getAdditionalProperties()->getProperties()->get('name')->getType());
+        $this->assertSame('string', $swaggerAsArray['definitions']['Pet']['properties']['child-pet']['additionalProperties']['properties']['name']['type']);
+        $this->assertSame('object', $swagger->getDefinitions()->get('Pet')->getProperties()->get('child-pet')->getAdditionalProperties()->getProperties()->get('child-pet-children')->getType());
+        $this->assertSame('string', $swagger->getDefinitions()->get('Pet')->getProperties()->get('child-pet')->getAdditionalProperties()->getProperties()->get('child-pet-children')->getAdditionalProperties()->getType());
+        $this->assertSame('object', $swagger->getDefinitions()->get('Pet')->getProperties()->get('child-pet')->getAdditionalProperties()->getProperties()->get('sub-object')->getType());
+        $this->assertSame(true, $swaggerAsArray['definitions']['Pet']['properties']['child-pet']['additionalProperties']['properties']['sub-object']['additionalProperties']);
     }
 }
