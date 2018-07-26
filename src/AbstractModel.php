@@ -23,11 +23,6 @@ abstract class AbstractModel
         return $this->doMerge($this->normalize($data), $overwrite);
     }
 
-    protected function doMerge($data, $overwrite = false)
-    {
-        $this->parse($data);
-    }
-
     public function toArray()
     {
         $return = [];
@@ -52,6 +47,8 @@ abstract class AbstractModel
 
         return $return;
     }
+
+    abstract protected function doMerge($data, $overwrite = false);
 
     protected function normalize($data)
     {
