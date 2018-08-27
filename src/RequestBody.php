@@ -13,7 +13,7 @@ namespace EXSyst\OpenApi;
 
 use EXSyst\OpenApi\Collections\Content;
 
-final class RequestBody extends AbstractObject
+final class RequestBody extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -29,8 +29,8 @@ final class RequestBody extends AbstractObject
     public function __construct(array $data = [])
     {
         $this->description = $data['description'] ?? null;
-        $this->content     = new Content($data['content'] ?? []);
-        $this->required    = $data['required'] ?? false;
+        $this->content = new Content($data['content'] ?? []);
+        $this->required = $data['required'] ?? false;
 
         $this->mergeExtensions($data);
     }

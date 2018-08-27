@@ -11,17 +11,17 @@
 
 namespace EXSyst\OpenApi;
 
-final class SecurityScheme extends AbstractObject
+final class SecurityScheme extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
-    const TYPE_API_KEY         = 'apiKey';
-    const TYPE_HTTP            = 'http';
-    const TYPE_OAUTH2          = 'oauth2';
+    const TYPE_API_KEY = 'apiKey';
+    const TYPE_HTTP = 'http';
+    const TYPE_OAUTH2 = 'oauth2';
     const TYPE_OPEN_ID_CONNECT = 'openIdConnect';
 
     const TYPES = [self::TYPE_API_KEY, self::TYPE_HTTP, self::TYPE_OAUTH2, self::TYPE_OPEN_ID_CONNECT];
-    const INS   = ['query', 'header', 'cookie'];
+    const INS = ['query', 'header', 'cookie'];
 
     /** @var string */
     private $type;
@@ -57,7 +57,7 @@ final class SecurityScheme extends AbstractObject
             throw new \InvalidArgumentException();
         }
 
-        $this->type        = $data['type'];
+        $this->type = $data['type'];
         $this->description = $data['description'] ?? null;
 
         switch ($data['type']) {
@@ -68,7 +68,7 @@ final class SecurityScheme extends AbstractObject
 
                 break;
             case self::TYPE_HTTP:
-                $this->scheme       = $data['scheme'];
+                $this->scheme = $data['scheme'];
                 $this->bearerFormat = $data['bearerFormat'];
 
                 break;
@@ -189,7 +189,7 @@ final class SecurityScheme extends AbstractObject
     public function setIn(string $in): void
     {
         if (!in_array($in, self::INS)) {
-            $values       = implode(', ', self::INS);
+            $values = implode(', ', self::INS);
             $errorMessage = '"in" field has to be one of given values: %s, %s given';
             throw new \InvalidArgumentException(sprintf($errorMessage, $values, $in));
         }

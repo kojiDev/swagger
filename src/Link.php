@@ -39,11 +39,11 @@ final class Link extends AbstractObject implements ExtensibleInterface
     {
         // TODO: Validation (not only here btw, everywhere)
         $this->operationRef = $data['operationRef'] ?? null;
-        $this->operationId  = $data['operationId']  ?? null;
-        $this->parameters   = new LinkParameters($data['parameters'] ?? []);
-        $this->requestBody  = $data['requestBody'] ?? null;
-        $this->description  = $data['description'] ?? null;
-        $this->server       = isset($data['server']) ? new Server($data['server']) : null;
+        $this->operationId = $data['operationId'] ?? null;
+        $this->parameters = new LinkParameters($data['parameters'] ?? []);
+        $this->requestBody = $data['requestBody'] ?? null;
+        $this->description = $data['description'] ?? null;
+        $this->server = isset($data['server']) ? new Server($data['server']) : null;
 
         $this->mergeExtensions($data);
     }

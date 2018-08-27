@@ -29,12 +29,12 @@ class SecurityRequirementTest extends TestCase
     {
         $object = new SecurityRequirement([
             'userOauth' => ['post:read'],
-            'adminJwt'  => [],
+            'adminJwt' => [],
         ]);
 
         $this->assertEquals([
             'userOauth' => ['post:read'],
-            'adminJwt'  => [],
+            'adminJwt' => [],
         ], $object->toArray());
     }
 
@@ -42,7 +42,7 @@ class SecurityRequirementTest extends TestCase
     {
         $object = new SecurityRequirement([
             'userOauth' => ['post:read'],
-            'adminJwt'  => [],
+            'adminJwt' => [],
         ]);
 
         $this->assertEquals(['post:read'], $object->get('userOauth'));

@@ -11,7 +11,7 @@
 
 namespace EXSyst\OpenApi;
 
-final class Responses extends AbstractObject implements \IteratorAggregate
+final class Responses extends AbstractObject implements \IteratorAggregate, ExtensibleInterface
 {
     use ExtensionPart;
 

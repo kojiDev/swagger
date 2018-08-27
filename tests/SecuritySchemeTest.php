@@ -22,7 +22,7 @@ class SecuritySchemeTest extends TestCase
         $object = new SecurityScheme($arr = [
             'type' => 'apiKey',
             'name' => 'Name',
-            'in'   => 'header',
+            'in' => 'header',
         ]);
 
         $this->assertEquals('apiKey', $object->getType());
@@ -41,8 +41,8 @@ class SecuritySchemeTest extends TestCase
     public function testHttp()
     {
         $object = new SecurityScheme($arr = [
-            'type'         => 'http',
-            'scheme'       => 'bearer',
+            'type' => 'http',
+            'scheme' => 'bearer',
             'bearerFormat' => 'JWT',
         ]);
 
@@ -60,13 +60,13 @@ class SecuritySchemeTest extends TestCase
     public function testOauth()
     {
         $object = new SecurityScheme($arr = [
-            'type'        => 'oauth2',
+            'type' => 'oauth2',
             'description' => 'Description',
-            'flows'       => [
+            'flows' => [
                 'implicit' => [
                     'authorizationUrl' => 'https://example.com/api/oauth/dialog',
-                    'refreshUrl'       => 'https://example.com/api/oauth/refresh',
-                    'scopes'           => [
+                    'refreshUrl' => 'https://example.com/api/oauth/refresh',
+                    'scopes' => [
                         'write:post' => 'write posts',
                     ],
                 ],
@@ -87,7 +87,7 @@ class SecuritySchemeTest extends TestCase
     public function testOpenIdConnect()
     {
         $object = new SecurityScheme($arr = [
-            'type'             => 'openIdConnect',
+            'type' => 'openIdConnect',
             'openIdConnectUrl' => 'https://example.com/api/openid',
         ]);
 

@@ -13,7 +13,7 @@ namespace EXSyst\OpenApi;
 
 use EXSyst\OpenApi\Collections\Schemas;
 
-class Schema extends AbstractObject
+class Schema extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -117,18 +117,18 @@ class Schema extends AbstractObject
             $this->{$of} = instantiateBulk(Schema::class, $data[$of] ?? []);
         }
 
-        $this->example     = $data['example']     ?? null;
-        $this->default     = $data['default']     ?? null;
+        $this->example = $data['example'] ?? null;
+        $this->default = $data['default'] ?? null;
         $this->description = $data['description'] ?? null;
         if (isset($data['additionalProperties'])) {
             $this->additionalProperties = is_bool($data['additionalProperties']) ?
                 $data['additionalProperties'] :
                 referenceOr(Schema::class, $data['additionalProperties']);
         }
-        $this->required   = $data['required'] ?? null;
-        $this->items      = isset($data['items']) ? referenceOr(Schema::class, $data['items']) : null;
+        $this->required = $data['required'] ?? null;
+        $this->items = isset($data['items']) ? referenceOr(Schema::class, $data['items']) : null;
         $this->properties = new Schemas($data['properties'] ?? []);
-        $this->format     = $data['format'] ?? null;
+        $this->format = $data['format'] ?? null;
 
         if (isset($data['discriminator'])) {
             $this->discriminator = new Discriminator($data['discriminator']);

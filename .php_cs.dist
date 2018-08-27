@@ -9,10 +9,6 @@ return PhpCsFixer\Config::create()
         '@Symfony'               => true,
         'ordered_imports'        => true,
         'phpdoc_order'           => true,
-        'binary_operator_spaces' => [
-            'default' => 'align',
-
-        ],
         'concat_space'           => [
             'spacing' => 'one',
         ],

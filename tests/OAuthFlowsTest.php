@@ -22,8 +22,8 @@ class OAuthFlowsTest extends TestCase
         $object = new OAuthFlows($arr = [
             'implicit' => [
                 'authorizationUrl' => 'https://example.com/api/oauth/dialog',
-                'refreshUrl'       => 'https://example.com/api/oauth/refresh',
-                'scopes'           => [
+                'refreshUrl' => 'https://example.com/api/oauth/refresh',
+                'scopes' => [
                     'write:post' => 'write posts',
                 ],
             ],
@@ -46,7 +46,7 @@ class OAuthFlowsTest extends TestCase
 
         $object->setPassword($OauthFlow = new OAuthFlow([
             'tokenUrl' => 'https://example.com/api/oauth/token',
-            'scopes'   => [
+            'scopes' => [
                 'write:post' => 'write posts',
             ],
         ]));

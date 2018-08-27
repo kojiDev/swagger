@@ -23,8 +23,8 @@ final class ExternalDocumentation extends AbstractObject implements ExtensibleIn
 
     public function __construct(array $data)
     {
-        $this->url         = $data['url'];
-        $this->description = $data['description'];
+        $this->url = $data['url'];
+        $this->description = $data['description'] ?? null;
 
         $this->mergeExtensions($data);
     }
@@ -40,5 +40,25 @@ final class ExternalDocumentation extends AbstractObject implements ExtensibleIn
         }
 
         return $return;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
     }
 }

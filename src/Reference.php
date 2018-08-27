@@ -32,4 +32,9 @@ final class Reference extends AbstractObject
     {
         return $this->ref;
     }
+
+    public function setRef(string $ref): void
+    {
+        $this->ref = $ref;
+    }
 }

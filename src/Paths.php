@@ -11,7 +11,7 @@
 
 namespace EXSyst\OpenApi;
 
-final class Paths extends AbstractObject implements \IteratorAggregate
+final class Paths extends AbstractObject implements \IteratorAggregate, ExtensibleInterface
 {
     use ExtensionPart;
 

@@ -24,7 +24,7 @@ final class License extends AbstractObject implements ExtensibleInterface
     public function __construct(array $data)
     {
         $this->name = $data['name'];
-        $this->url  = $data['url'] ?? null;
+        $this->url = $data['url'] ?? null;
 
         $this->mergeExtensions($data);
     }
@@ -40,5 +40,25 @@ final class License extends AbstractObject implements ExtensibleInterface
         }
 
         return $return;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): void
+    {
+        $this->url = $url;
     }
 }

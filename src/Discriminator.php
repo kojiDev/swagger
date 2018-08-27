@@ -22,7 +22,7 @@ final class Discriminator extends AbstractObject
     public function __construct($data)
     {
         $this->propertyName = $data['propertyName'];
-        $this->mapping      = $data['mapping'] ?? null;
+        $this->mapping = $data['mapping'] ?? null;
     }
 
     protected function export(): array
@@ -36,5 +36,25 @@ final class Discriminator extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getPropertyName(): string
+    {
+        return $this->propertyName;
+    }
+
+    public function setPropertyName(string $propertyName): void
+    {
+        $this->propertyName = $propertyName;
+    }
+
+    public function getMapping(): array
+    {
+        return $this->mapping;
+    }
+
+    public function setMapping(array $mapping): void
+    {
+        $this->mapping = $mapping;
     }
 }

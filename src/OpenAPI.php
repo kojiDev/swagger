@@ -33,19 +33,19 @@ final class OpenAPI extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->info       = new Info($data['info'] ?? []);
-        $this->servers    = instantiateBulk(Server::class, $data['servers'] ?? []);
-        $this->paths      = new Paths($data['paths'] ?? []);
+        $this->info = new Info($data['info'] ?? []);
+        $this->servers = instantiateBulk(Server::class, $data['servers'] ?? []);
+        $this->paths = new Paths($data['paths'] ?? []);
         $this->components = new Components($data['components'] ?? []);
-        $this->tags       = instantiateBulk(Tag::class, $data['tags'] ?? []);
+        $this->tags = instantiateBulk(Tag::class, $data['tags'] ?? []);
     }
 
     protected function export(): array
     {
         $return = [
             'openapi' => $this->openapi,
-            'info'    => $this->info,
-            'paths'   => $this->paths,
+            'info' => $this->info,
+            'paths' => $this->paths,
         ];
 
         if (!$this->components->isEmpty()) {

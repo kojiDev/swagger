@@ -13,7 +13,7 @@ namespace EXSyst\OpenApi;
 
 use EXSyst\OpenApi\Collections\Parameters;
 
-final class PathItem extends AbstractObject
+final class PathItem extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -60,15 +60,15 @@ final class PathItem extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->ref         = $data['ref']         ?? null;
-        $this->summary     = $data['summary']     ?? null;
+        $this->ref = $data['ref'] ?? null;
+        $this->summary = $data['summary'] ?? null;
         $this->description = $data['description'] ?? null;
 
         foreach (self::$methods as $method) {
             $this->{$method} = isset($data[$method]) ? new Operation($data[$method]) : null;
         }
 
-        $this->servers    = instantiateBulk(Server::class, $data['servers'] ?? []);
+        $this->servers = instantiateBulk(Server::class, $data['servers'] ?? []);
         $this->parameters = new Parameters($data['parameters'] ?? []);
 
         $this->mergeExtensions($data);

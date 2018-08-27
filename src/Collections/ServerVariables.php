@@ -22,13 +22,23 @@ final class ServerVariables extends AbstractObject
     public function __construct(array $data = [])
     {
         foreach ($data as $key => $variable) {
-            $this->variables[$key] = new ServerVariable($variable);
+            $this->add($key, new ServerVariable($variable));
         }
     }
 
     public function isEmpty(): bool
     {
         return empty($this->variables);
+    }
+
+    public function get(string $key): ?ServerVariable
+    {
+        return $this->variables[$key] ?? null;
+    }
+
+    public function add(string $key, ServerVariable $variable): void
+    {
+        $this->variables[$key] = $variable;
     }
 
     protected function export(): array

@@ -11,7 +11,7 @@
 
 namespace EXSyst\OpenApi;
 
-final class Header extends AbstractObject
+final class Header extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -24,7 +24,7 @@ final class Header extends AbstractObject
     public function __construct(array $data)
     {
         $this->description = $data['description'] ?? null;
-        $this->schema      = isset($data['schema']) ? referenceOr(Schema::class, $data['schema']) : null;
+        $this->schema = isset($data['schema']) ? referenceOr(Schema::class, $data['schema']) : null;
 
         $this->mergeExtensions($data);
     }

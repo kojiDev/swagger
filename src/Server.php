@@ -13,14 +13,14 @@ namespace EXSyst\OpenApi;
 
 use EXSyst\OpenApi\Collections\ServerVariables;
 
-final class Server extends AbstractObject
+final class Server extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
     /** @var string */
     private $url;
 
-    /** @var string */
+    /** @var string|null */
     private $description;
 
     /** @var ServerVariables */
@@ -28,9 +28,9 @@ final class Server extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->url         = $data['url'];
+        $this->url = $data['url'];
         $this->description = $data['description'] ?? null;
-        $this->variables   = new ServerVariables($data['variables'] ?? []);
+        $this->variables = new ServerVariables($data['variables'] ?? []);
 
         $this->mergeExtensions($data);
     }
@@ -64,7 +64,7 @@ final class Server extends AbstractObject
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -74,5 +74,15 @@ final class Server extends AbstractObject
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getVariables(): ServerVariables
+    {
+        return $this->variables;
+    }
+
+    public function setVariables(ServerVariables $variables): void
+    {
+        $this->variables = $variables;
     }
 }

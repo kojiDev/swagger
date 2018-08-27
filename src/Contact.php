@@ -11,23 +11,23 @@
 
 namespace EXSyst\OpenApi;
 
-final class Contact extends AbstractObject
+final class Contact extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
-    /** @var string */
+    /** @var string|null */
     private $name;
 
-    /** @var string */
+    /** @var string|null */
     private $url;
 
-    /** @var string */
+    /** @var string|null */
     private $email;
 
     public function __construct(array $data = [])
     {
-        $this->name  = $data['name']  ?? null;
-        $this->url   = $data['url']   ?? null;
+        $this->name = $data['name'] ?? null;
+        $this->url = $data['url'] ?? null;
         $this->email = $data['email'] ?? null;
 
         $this->mergeExtensions($data);
@@ -50,5 +50,35 @@ final class Contact extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): void
+    {
+        $this->url = $url;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
     }
 }

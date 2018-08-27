@@ -19,11 +19,11 @@ class XMLTest extends TestCase
     public function testConstructor()
     {
         $object = new XML($arr = [
-            'name'      => 'name',
+            'name' => 'name',
             'namespace' => 'namespace',
-            'prefix'    => 'prefix',
+            'prefix' => 'prefix',
             'attribute' => true,
-            'wrapped'   => false,
+            'wrapped' => false,
         ]);
 
         $this->assertEquals($arr, $object->toArray());

@@ -14,7 +14,7 @@ namespace EXSyst\OpenApi;
 use EXSyst\OpenApi\Collections\Callbacks;
 use EXSyst\OpenApi\Collections\Parameters;
 
-final class Operation extends AbstractObject
+final class Operation extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -53,16 +53,16 @@ final class Operation extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->tags        = $data['tags']        ?? [];
-        $this->summary     = $data['summary']     ?? null;
+        $this->tags = $data['tags'] ?? [];
+        $this->summary = $data['summary'] ?? null;
         $this->description = $data['description'] ?? null;
         $this->operationId = $data['operationId'] ?? null;
-        $this->parameters  = new Parameters($data['parameters'] ?? []);
+        $this->parameters = new Parameters($data['parameters'] ?? []);
         $this->requestBody = referenceOr(RequestBody::class, $data['requestBody'] ?? []);
-        $this->responses   = new Responses($data['responses'] ?? []);
-        $this->deprecated  = $data['deprecated'] ?? false;
-        $this->callbacks   = new Callbacks($data['callbacks'] ?? []);
-        $this->security    = instantiateBulk(SecurityRequirement::class, $data['security'] ?? []);
+        $this->responses = new Responses($data['responses'] ?? []);
+        $this->deprecated = $data['deprecated'] ?? false;
+        $this->callbacks = new Callbacks($data['callbacks'] ?? []);
+        $this->security = instantiateBulk(SecurityRequirement::class, $data['security'] ?? []);
 
         $this->mergeExtensions($data);
     }

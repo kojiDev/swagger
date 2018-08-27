@@ -11,7 +11,7 @@
 
 namespace EXSyst\OpenApi;
 
-final class Example extends AbstractObject
+final class Example extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
@@ -29,9 +29,9 @@ final class Example extends AbstractObject
 
     public function __construct(array $data = [])
     {
-        $this->summary       = $data['summary']       ?? null;
-        $this->description   = $data['description']   ?? null;
-        $this->value         = $data['value']         ?? null;
+        $this->summary = $data['summary'] ?? null;
+        $this->description = $data['description'] ?? null;
+        $this->value = $data['value'] ?? null;
         $this->externalValue = $data['externalValue'] ?? null;
 
         $this->mergeExtensions($data);
@@ -58,5 +58,45 @@ final class Example extends AbstractObject
         }
 
         return $return;
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary(?string $summary): void
+    {
+        $this->summary = $summary;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function setValue($value): void
+    {
+        $this->value = $value;
+    }
+
+    public function getExternalValue(): ?string
+    {
+        return $this->externalValue;
+    }
+
+    public function setExternalValue(?string $externalValue): void
+    {
+        $this->externalValue = $externalValue;
     }
 }

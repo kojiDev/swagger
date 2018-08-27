@@ -21,13 +21,13 @@ final class ServerVariable extends AbstractObject implements ExtensibleInterface
     /** @var string */
     private $default;
 
-    /** @var string */
+    /** @var string|null */
     private $description;
 
     public function __construct(array $data)
     {
-        $this->default     = $data['default'];
-        $this->enum        = $data['enum']        ?? [];
+        $this->default = $data['default'];
+        $this->enum = $data['enum'] ?? [];
         $this->description = $data['description'] ?? null;
     }
 
@@ -46,5 +46,38 @@ final class ServerVariable extends AbstractObject implements ExtensibleInterface
         }
 
         return $return;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getEnum(): array
+    {
+        return $this->enum;
+    }
+
+    public function setEnum(array $enum): void
+    {
+        $this->enum = $enum;
+    }
+
+    public function getDefault(): string
+    {
+        return $this->default;
+    }
+
+    public function setDefault(string $default): void
+    {
+        $this->default = $default;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 }

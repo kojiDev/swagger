@@ -18,16 +18,16 @@ final class Tag extends AbstractObject implements ExtensibleInterface
     /** @var string */
     private $name;
 
-    /** @var string */
+    /** @var string|null */
     private $description;
 
-    /** @var ExternalDocumentation */
+    /** @var ExternalDocumentation|null */
     private $externalDocs;
 
     public function __construct($data)
     {
-        $this->name         = $data['name'];
-        $this->description  = $data['description'] ?? null;
+        $this->name = $data['name'];
+        $this->description = $data['description'] ?? null;
         $this->externalDocs = isset($data['externalDocs']) ? new ExternalDocumentation($data['externalDocs']) : null;
     }
 
@@ -46,5 +46,35 @@ final class Tag extends AbstractObject implements ExtensibleInterface
         }
 
         return $return;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getExternalDocs(): ?ExternalDocumentation
+    {
+        return $this->externalDocs;
+    }
+
+    public function setExternalDocs(?ExternalDocumentation $externalDocs): void
+    {
+        $this->externalDocs = $externalDocs;
     }
 }

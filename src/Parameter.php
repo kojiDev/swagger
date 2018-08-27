@@ -11,14 +11,14 @@
 
 namespace EXSyst\OpenApi;
 
-final class Parameter extends AbstractObject
+final class Parameter extends AbstractObject implements ExtensibleInterface
 {
     use ExtensionPart;
 
     const
-        IN_QUERY    = 'query';
+        IN_QUERY = 'query';
     const IN_HEADER = 'header';
-    const IN_PATH   = 'path';
+    const IN_PATH = 'path';
     const IN_COOKIE = 'cookie';
 
     /** @var string */
@@ -59,14 +59,14 @@ final class Parameter extends AbstractObject
 
     public function __construct(array $data)
     {
-        $this->name            = $data['name'];
-        $this->in              = $data['in'];
-        $this->description     = $data['description'] ?? null;
-        $this->required        = self::IN_PATH === $this->in ? true : ($data['required'] ?? null);
-        $this->deprecated      = $data['deprecated'] ?? null;
+        $this->name = $data['name'];
+        $this->in = $data['in'];
+        $this->description = $data['description'] ?? null;
+        $this->required = self::IN_PATH === $this->in ? true : ($data['required'] ?? null);
+        $this->deprecated = $data['deprecated'] ?? null;
         $this->allowEmptyValue = self::IN_QUERY === $this->in ? ($data['allowEmptyValue'] ?? null) : null;
-        $this->style           = $data['style']  ?? null;
-        $this->schema          = $data['schema'] ?? null;
+        $this->style = $data['style'] ?? null;
+        $this->schema = $data['schema'] ?? null;
 
         $this->mergeExtensions($data);
     }
@@ -75,7 +75,7 @@ final class Parameter extends AbstractObject
     {
         $return = [
             'name' => $this->name,
-            'in'   => $this->in,
+            'in' => $this->in,
         ];
 
         if ($this->description) {

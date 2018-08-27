@@ -20,16 +20,16 @@ class OAuthFlowTest extends TestCase
     {
         $object = new OAuthFlow([
             'authorizationUrl' => 'https://example.com/api/oauth/dialog',
-            'tokenUrl'         => 'https://example.com/api/oauth/token',
-            'scopes'           => [
+            'tokenUrl' => 'https://example.com/api/oauth/token',
+            'scopes' => [
                 'post:read' => 'read posts',
             ],
         ]);
 
         $this->assertEquals([
             'authorizationUrl' => 'https://example.com/api/oauth/dialog',
-            'tokenUrl'         => 'https://example.com/api/oauth/token',
-            'scopes'           => [
+            'tokenUrl' => 'https://example.com/api/oauth/token',
+            'scopes' => [
                 'post:read' => 'read posts',
             ],
         ], $object->toArray());
@@ -39,9 +39,9 @@ class OAuthFlowTest extends TestCase
     {
         $object = new OAuthFlow([
             'authorizationUrl' => 'https://example.com/api/oauth/dialog',
-            'tokenUrl'         => 'https://example.com/api/oauth/token',
-            'refreshUrl'       => 'https://example.com/api/oauth/refresh',
-            'scopes'           => [
+            'tokenUrl' => 'https://example.com/api/oauth/token',
+            'refreshUrl' => 'https://example.com/api/oauth/refresh',
+            'scopes' => [
                 'post:read' => 'read posts',
             ],
         ]);
