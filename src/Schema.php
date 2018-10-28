@@ -176,7 +176,11 @@ class Schema extends AbstractObject implements ExtensibleInterface
         }
 
         if (!is_null($this->additionalProperties)) {
-            $return['additionalProperties'] = $this->additionalProperties;
+            if ($this->additionalProperties instanceof self && $this->additionalProperties->toArray() === []) {
+                $this->additionalProperties = new \stdClass();
+            } else {
+                $return['additionalProperties'] = $this->additionalProperties;
+            }
         }
 
         if (!is_null($this->default)) {
