@@ -28,7 +28,7 @@ class ContactTest extends TestCase
 
         $object = new Contact();
 
-        $this->assertEquals([], $object->toArray());
+        $this->assertEquals(new \stdClass(), $object->toArray());
     }
 
     public function testGettersAndSetters()

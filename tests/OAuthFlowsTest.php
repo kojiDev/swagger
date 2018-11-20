@@ -33,7 +33,7 @@ class OAuthFlowsTest extends TestCase
 
         $object = new OAuthFlows();
 
-        $this->assertEquals([], $object->toArray());
+        $this->assertEquals(new \stdClass(), $object->toArray());
     }
 
     public function testGettersAndSetters()

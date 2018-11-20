@@ -30,7 +30,7 @@ class XMLTest extends TestCase
 
         $object = new XML();
 
-        $this->assertEquals([], $object->toArray());
+        $this->assertEquals(new \stdClass(), $object->toArray());
     }
 
     public function testGettersAndSetters()

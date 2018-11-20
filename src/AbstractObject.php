@@ -19,7 +19,13 @@ abstract class AbstractObject
     public function toArray()
     {
         $return = [];
-        foreach ($this->export() as $key => $value) {
+        $export = $this->export();
+
+        if (empty($export)) {
+            return new \stdClass();
+        }
+
+        foreach ($export as $key => $value) {
             $value = $this->resolve($value);
             if (null === $value) {
                 continue;
