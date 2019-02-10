@@ -31,6 +31,11 @@ final class Schemas extends AbstractObject
         return empty($this->schemas);
     }
 
+    public function has(string $key): bool
+    {
+        return isset($this->schemas[$key]);
+    }
+
     protected function export(): array
     {
         return $this->schemas;

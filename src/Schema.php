@@ -114,7 +114,7 @@ class Schema extends AbstractObject implements ExtensibleInterface
         $this->nullable = $data['nullable'] ?? null;
 
         foreach (self::$ofs as $of) {
-            $this->{$of} = instantiateBulk(Schema::class, $data[$of] ?? []);
+            $this->{$of} = new Schemas(instantiateBulk(Schema::class, $data[$of] ?? []));
         }
 
         $this->example = $data['example'] ?? null;
